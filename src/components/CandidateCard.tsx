@@ -2,16 +2,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Users, MapPin, Briefcase } from 'lucide-react';
+import { Users } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface CandidateCardProps {
   id: string;
   name: string;
-  title: string;
   description: string;
-  location: string;
-  experience: string;
   votes: number;
   totalVotes: number;
   isSelected?: boolean;
@@ -22,10 +19,7 @@ interface CandidateCardProps {
 const CandidateCard = ({
   id,
   name,
-  title,
   description,
-  location,
-  experience,
   votes,
   totalVotes,
   isSelected = false,
@@ -43,26 +37,12 @@ const CandidateCard = ({
         <div className="flex items-start justify-between">
           <div className="space-y-2 flex-1">
             <CardTitle className="text-xl font-semibold">{name}</CardTitle>
-            <CardDescription className="text-sm font-medium text-primary">
-              {title}
-            </CardDescription>
           </div>
           {isSelected && (
             <Badge className="bg-primary text-primary-foreground">
               ✓ Selected
             </Badge>
           )}
-        </div>
-        
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-          <span className="flex items-center gap-1">
-            <MapPin size={14} />
-            {location}
-          </span>
-          <span className="flex items-center gap-1">
-            <Briefcase size={14} />
-            {experience}
-          </span>
         </div>
         
         <CardDescription className="text-sm leading-relaxed">

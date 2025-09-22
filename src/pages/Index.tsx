@@ -13,91 +13,61 @@ const mockCandidates = [
   {
     id: '1',
     name: 'Sarah Chen',
-    title: 'Blockchain Developer & DeFi Expert',
     description: 'Former core developer at major DeFi protocols with 8+ years experience in blockchain technology. Focused on technical excellence and community-driven development.',
-    location: 'San Francisco, CA',
-    experience: '8+ Years',
     votes: 234
   },
   {
     id: '2',
     name: 'Marcus Rodriguez',
-    title: 'Security Researcher & Auditor',
     description: 'Leading security expert specializing in smart contract auditing and protocol security. Has secured over $2B in DeFi protocols.',
-    location: 'Austin, TX',
-    experience: '6+ Years',
     votes: 198
   },
   {
     id: '3',
     name: 'Aisha Patel',
-    title: 'Community Leader & Educator',
     description: 'Passionate about blockchain education and community building. Has grown multiple Web3 communities from zero to thousands of active members.',
-    location: 'London, UK',
-    experience: '5+ Years',
     votes: 167
   },
   {
     id: '4',
     name: 'David Kim',
-    title: 'Economics & Tokenomics Specialist',
     description: 'PhD in Economics with focus on cryptocurrency markets and tokenomics design. Previously advised multiple successful DeFi protocols.',
-    location: 'Seoul, South Korea',
-    experience: '10+ Years',
     votes: 189
   },
   {
     id: '5',
     name: 'Elena Kowalski',
-    title: 'Legal & Regulatory Expert',
     description: 'Blockchain lawyer specializing in DeFi regulations and compliance. Helps navigate the evolving regulatory landscape.',
-    location: 'Berlin, Germany',
-    experience: '7+ Years',
     votes: 145
   },
   {
     id: '6',
     name: 'James Thompson',
-    title: 'Infrastructure & DevOps Engineer',
     description: 'Expert in blockchain infrastructure and node operations. Built scalable systems for major Layer 1 and Layer 2 protocols.',
-    location: 'Toronto, Canada',
-    experience: '9+ Years',
     votes: 156
   },
   {
     id: '7',
     name: 'Maria Santos',
-    title: 'Product Manager & UX Designer',
     description: 'Product leader focused on user experience in DeFi. Led product development for consumer-facing blockchain applications.',
-    location: 'Barcelona, Spain',
-    experience: '6+ Years',
     votes: 134
   },
   {
     id: '8',
     name: 'Ahmed Hassan',
-    title: 'Research & Development Lead',
     description: 'Blockchain researcher working on consensus mechanisms and scalability solutions. Published numerous papers on distributed systems.',
-    location: 'Dubai, UAE',
-    experience: '8+ Years',
     votes: 178
   },
   {
     id: '9',
     name: 'Lisa Wang',
-    title: 'Growth & Business Development',
     description: 'Business development expert with track record of growing blockchain startups. Specialized in partnerships and ecosystem development.',
-    location: 'Singapore',
-    experience: '7+ Years',
     votes: 123
   },
   {
     id: '10',
     name: 'Robert Johnson',
-    title: 'Finance & Treasury Management',
     description: 'Former traditional finance executive turned DeFi expert. Specialized in treasury management and risk assessment for DAOs.',
-    location: 'New York, NY',
-    experience: '12+ Years',
     votes: 142
   }
 ];
@@ -168,7 +138,6 @@ const Index = () => {
   
   const filteredCandidates = mockCandidates.filter(candidate => {
     const matchesSearch = candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         candidate.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          candidate.description.toLowerCase().includes(searchTerm.toLowerCase());
     return matchesSearch;
   });
