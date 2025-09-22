@@ -138,25 +138,18 @@ const CombinedStakingCard = ({
 
           {/* Middle Column - Balance Info */}
           <div className="space-y-4">
-            <div className="space-y-3">
-              <div className="p-4 rounded-lg border border-border/50 bg-background/50">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Available Balance</p>
-                <p className="text-2xl font-bold">{voiBalance.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">VOI</span></p>
-              </div>
-              
-              <div className="p-4 rounded-lg border border-primary/20 bg-primary/5">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Staked Amount</p>
-                <p className="text-2xl font-bold text-primary">{stakedAmount.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">VOI</span></p>
-                {stakedAmount > 0 && (
-                  <div className="mt-3">
-                    <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                      <span>Progress</span>
-                      <span>{stakingProgress.toFixed(0)}%</span>
-                    </div>
-                    <Progress value={stakingProgress} className="h-1.5" />
+            <div className="p-4 rounded-lg border border-primary/20 bg-primary/5">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Staked Amount</p>
+              <p className="text-2xl font-bold text-primary">{stakedAmount.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">VOI</span></p>
+              {stakedAmount > 0 && (
+                <div className="mt-3">
+                  <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                    <span>Progress</span>
+                    <span>{stakingProgress.toFixed(0)}%</span>
                   </div>
-                )}
-              </div>
+                  <Progress value={stakingProgress} className="h-1.5" />
+                </div>
+              )}
             </div>
 
           {/* Middle Column - Time Remaining */}
