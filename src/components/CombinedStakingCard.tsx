@@ -103,7 +103,7 @@ const CombinedStakingCard = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-4">
           {/* Left Column - Required Stake */}
           <div className="space-y-4">
             <div className="p-4 rounded-lg border border-primary/20 bg-primary/5 h-full flex flex-col">
