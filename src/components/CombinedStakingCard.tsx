@@ -106,30 +106,7 @@ const CombinedStakingCard = ({
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Left Column - Balance Overview */}
           <div className="space-y-4">
-            <div className="space-y-3">
-              <div className="p-4 rounded-lg border border-border/50 bg-background/50">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Available Balance</p>
-                <p className="text-2xl font-bold">{voiBalance.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">VOI</span></p>
-              </div>
-              
-              <div className="p-4 rounded-lg border border-primary/20 bg-primary/5">
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Staked Amount</p>
-                <p className="text-2xl font-bold text-primary">{stakedAmount.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">VOI</span></p>
-                {stakedAmount > 0 && (
-                  <div className="mt-3">
-                    <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                      <span>Progress</span>
-                      <span>{stakingProgress.toFixed(0)}%</span>
-                    </div>
-                    <Progress value={stakingProgress} className="h-1.5" />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Middle Column - Requirements/Info */}
-          <div className="space-y-4">
+            {/* Required Stake Info */}
             <div className="p-4 rounded-lg border border-primary/20 bg-primary/5">
               <div className="flex items-center gap-2 mb-3">
                 <Lock className="h-4 w-4 text-primary" />
@@ -159,6 +136,30 @@ const CombinedStakingCard = ({
               </div>
             </div>
 
+            <div className="space-y-3">
+              <div className="p-4 rounded-lg border border-border/50 bg-background/50">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Available Balance</p>
+                <p className="text-2xl font-bold">{voiBalance.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">VOI</span></p>
+              </div>
+              
+              <div className="p-4 rounded-lg border border-primary/20 bg-primary/5">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Staked Amount</p>
+                <p className="text-2xl font-bold text-primary">{stakedAmount.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">VOI</span></p>
+                {stakedAmount > 0 && (
+                  <div className="mt-3">
+                    <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                      <span>Progress</span>
+                      <span>{stakingProgress.toFixed(0)}%</span>
+                    </div>
+                    <Progress value={stakingProgress} className="h-1.5" />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Middle Column - Time Remaining */}
+          <div className="space-y-4">
             {isStaked && (
               <div className="p-4 rounded-lg border border-border/50 bg-background/50">
                 <div className="flex items-center gap-2 mb-2">
