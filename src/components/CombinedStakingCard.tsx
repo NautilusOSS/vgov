@@ -152,6 +152,11 @@ const CombinedStakingCard = ({
               )}
             </div>
 
+            <div className="p-4 rounded-lg border border-border/50 bg-background/50">
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Available Balance</p>
+              <p className="text-2xl font-bold">{voiBalance.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">VOI</span></p>
+            </div>
+
           {/* Middle Column - Time Remaining */}
             {isStaked && (
               <div className="p-4 rounded-lg border border-border/50 bg-background/50">
