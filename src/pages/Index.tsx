@@ -107,6 +107,7 @@ const Index = () => {
   const [stakedAmount, setStakedAmount] = useState(0);
   const [isStaked, setIsStaked] = useState(false);
   const [isStaking, setIsStaking] = useState(false);
+  const [isUnstaking, setIsUnstaking] = useState(false);
   const lockEndDate = new Date('2024-10-15T23:59:59');
   
   const { toast } = useToast();
@@ -143,6 +144,35 @@ const Index = () => {
     toast({
       title: "Staking Successful!",
       description: "50,000 VOI has been staked. You can now vote for candidates.",
+    });
+  };
+
+  const handleUnstake = async () => {
+    const now = new Date();
+    const canUnstake = now > lockEndDate;
+    
+    if (!canUnstake) {
+      toast({
+        title: "Cannot Unstake Yet",
+        description: "You can only unstake after the election period ends (Oct 15, 2024)",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsUnstaking(true);
+    
+    // Simulate unstaking transaction
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    setStakedAmount(0);
+    setIsStaked(false);
+    setIsUnstaking(false);
+    setSelectedCandidates(new Set()); // Clear votes when unstaking
+    
+    toast({
+      title: "Unstaking Successful!",
+      description: "50,000 VOI has been returned to your wallet.",
     });
   };
 
@@ -250,14 +280,15 @@ const Index = () => {
               isStaked={isStaked}
               lockEndDate={lockEndDate}
             />
-            {!isStaked && (
-              <StakingCard
-                voiBalance={voiBalance}
-                isStaked={isStaked}
-                isStaking={isStaking}
-                onStake={handleStake}
-              />
-            )}
+            <StakingCard
+              voiBalance={voiBalance}
+              isStaked={isStaked}
+              isStaking={isStaking}
+              isUnstaking={isUnstaking}
+              lockEndDate={lockEndDate}
+              onStake={handleStake}
+              onUnstake={handleUnstake}
+            />
           </div>
         )}
 

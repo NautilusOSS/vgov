@@ -4,21 +4,26 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Lock, Calendar, Coins, AlertTriangle, CheckCircle2 } from 'lucide-react';
+import { Lock, Calendar, Coins, AlertTriangle, CheckCircle2, Unlock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface StakingCardProps {
   voiBalance: number;
   isStaked: boolean;
   isStaking: boolean;
+  isUnstaking: boolean;
+  lockEndDate: Date;
   onStake: () => void;
+  onUnstake: () => void;
 }
 
-const StakingCard = ({ voiBalance, isStaked, isStaking, onStake }: StakingCardProps) => {
+const StakingCard = ({ voiBalance, isStaked, isStaking, isUnstaking, lockEndDate, onStake, onUnstake }: StakingCardProps) => {
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const { toast } = useToast();
   const requiredStake = 50000;
   const canStake = voiBalance >= requiredStake && acceptedTerms && !isStaked;
+  const now = new Date();
+  const canUnstake = now > lockEndDate;
 
   const handleStake = () => {
     if (!acceptedTerms) {
@@ -51,15 +56,60 @@ const StakingCard = ({ voiBalance, isStaked, isStaking, onStake }: StakingCardPr
             Staking Complete
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">Staked Amount</span>
+            <span className="font-semibold text-green-700">50,000 VOI</span>
+          </div>
+          
+          <Badge variant="secondary" className="w-full justify-center bg-green-500/10 text-green-700 border-green-500/20">
+            ✓ Voting Enabled - You can now select candidates
+          </Badge>
+
+          <Separator />
+
+          {/* Unstaking Section */}
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">Staked Amount</span>
-              <span className="font-semibold text-green-700">50,000 VOI</span>
+              <span className="text-sm font-medium">Unlock Status</span>
+              <Badge 
+                variant="secondary" 
+                className={canUnstake ? "bg-blue-500/10 text-blue-700 border-blue-500/20" : "bg-amber-500/10 text-amber-700 border-amber-500/20"}
+              >
+                {canUnstake ? "✓ Can Unstake" : "🔒 Locked"}
+              </Badge>
             </div>
-            <Badge variant="secondary" className="w-full justify-center bg-green-500/10 text-green-700 border-green-500/20">
-              ✓ Voting Enabled - You can now select candidates
-            </Badge>
+            
+            {!canUnstake && (
+              <p className="text-xs text-muted-foreground">
+                Your VOI will automatically unlock after October 15, 2024
+              </p>
+            )}
+
+            <Button 
+              onClick={onUnstake}
+              disabled={!canUnstake || isUnstaking}
+              variant={canUnstake ? "default" : "secondary"}
+              className="w-full"
+              size="sm"
+            >
+              {isUnstaking ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                  Processing Unstake...
+                </>
+              ) : canUnstake ? (
+                <>
+                  <Unlock className="mr-2 h-4 w-4" />
+                  Unstake VOI
+                </>
+              ) : (
+                <>
+                  <Lock className="mr-2 h-4 w-4" />
+                  Locked Until Oct 15
+                </>
+              )}
+            </Button>
           </div>
         </CardContent>
       </Card>
