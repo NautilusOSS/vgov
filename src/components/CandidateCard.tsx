@@ -45,9 +45,12 @@ const CandidateCard = ({
           )}
         </div>
         
-        <CardDescription className="text-sm leading-relaxed">
-          {description}
-        </CardDescription>
+        <div className="space-y-2">
+          <p className="text-sm font-semibold text-foreground">Candidate Profile:</p>
+          <CardDescription className="text-sm leading-relaxed">
+            {description}
+          </CardDescription>
+        </div>
       </CardHeader>
 
       <CardContent className="space-y-4">
