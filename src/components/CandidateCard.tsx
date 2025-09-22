@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Users } from 'lucide-react';
+import { Users, Twitter, MessageCircle, ExternalLink } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface CandidateCardProps {
@@ -14,6 +14,8 @@ interface CandidateCardProps {
   isSelected?: boolean;
   onVote?: (candidateId: string) => void;
   canVote?: boolean;
+  twitterUrl?: string;
+  discordUrl?: string;
 }
 
 const CandidateCard = ({
@@ -24,7 +26,9 @@ const CandidateCard = ({
   totalVotes,
   isSelected = false,
   onVote,
-  canVote = true
+  canVote = true,
+  twitterUrl,
+  discordUrl
 }: CandidateCardProps) => {
   const votePercentage = totalVotes > 0 ? (votes / totalVotes) * 100 : 0;
 
@@ -37,6 +41,30 @@ const CandidateCard = ({
         <div className="flex items-start justify-between">
           <div className="space-y-2 flex-1">
             <CardTitle className="text-xl font-semibold">{name}</CardTitle>
+            <div className="flex items-center gap-3">
+              {twitterUrl && (
+                <a
+                  href={twitterUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Twitter size={16} />
+                  <ExternalLink size={12} />
+                </a>
+              )}
+              {discordUrl && (
+                <a
+                  href={discordUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <MessageCircle size={16} />
+                  <ExternalLink size={12} />
+                </a>
+              )}
+            </div>
           </div>
           {isSelected && (
             <Badge className="bg-primary text-primary-foreground">
