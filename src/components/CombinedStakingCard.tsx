@@ -6,6 +6,14 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { 
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { 
   Coins, 
   Clock, 
   CheckCircle, 
@@ -14,7 +22,8 @@ import {
   Calendar, 
   AlertTriangle, 
   CheckCircle2, 
-  Unlock 
+  Unlock,
+  Vote
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -28,6 +37,7 @@ interface CombinedStakingCardProps {
   votesRemaining: number;
   onStake: () => void;
   onUnstake: () => void;
+  onStakeSuccess?: () => void;
 }
 
 const CombinedStakingCard = ({ 
@@ -39,9 +49,11 @@ const CombinedStakingCard = ({
   lockEndDate,
   votesRemaining,
   onStake, 
-  onUnstake 
+  onUnstake,
+  onStakeSuccess
 }: CombinedStakingCardProps) => {
   const [timeRemaining, setTimeRemaining] = useState<string>('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const { toast } = useToast();
   const requiredStake = 50000;
   const canStake = voiBalance >= requiredStake && !isStaked;
@@ -86,8 +98,62 @@ const CombinedStakingCard = ({
     onStake();
   };
 
+  // Show success modal when staking completes
+  useEffect(() => {
+    if (isStaked && !isStaking && onStakeSuccess) {
+      setShowSuccessModal(true);
+      onStakeSuccess();
+    }
+  }, [isStaked, isStaking, onStakeSuccess]);
+
   return (
-    <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+    <>
+      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader className="text-center">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10">
+              <CheckCircle2 className="h-8 w-8 text-green-500" />
+            </div>
+            <DialogTitle className="text-xl font-semibold">Staking Successful!</DialogTitle>
+            <DialogDescription className="mt-2">
+              You have successfully staked 50,000 VOI and are now eligible to participate in voting.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-4">
+              <div className="flex items-center gap-3">
+                <Vote className="h-5 w-5 text-green-600" />
+                <div>
+                  <p className="font-medium text-green-700">Ready to Vote</p>
+                  <p className="text-sm text-green-600">You can now vote for up to 5 candidates</p>
+                </div>
+              </div>
+            </div>
+            
+            <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
+              <div className="flex items-center gap-3">
+                <Lock className="h-5 w-5 text-primary" />
+                <div>
+                  <p className="font-medium text-primary">Tokens Locked</p>
+                  <p className="text-sm text-muted-foreground">Your VOI is secured until October 15, 2025</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button 
+              onClick={() => setShowSuccessModal(false)}
+              className="w-full"
+            >
+              Continue to Voting
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
       <CardHeader className="pb-6">
         <CardTitle className="flex items-center gap-3 text-xl">
           <div className="p-2 rounded-lg bg-primary/10">
@@ -275,6 +341,7 @@ const CombinedStakingCard = ({
         </div>
       </CardContent>
     </Card>
+    </>
   );
 };
 
