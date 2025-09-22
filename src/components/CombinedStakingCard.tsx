@@ -104,9 +104,8 @@ const CombinedStakingCard = ({
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Left Column - Balance Overview */}
+          {/* Left Column - Required Stake */}
           <div className="space-y-4">
-            {/* Required Stake Info */}
             <div className="p-4 rounded-lg border border-primary/20 bg-primary/5">
               <div className="flex items-center gap-2 mb-3">
                 <Lock className="h-4 w-4 text-primary" />
@@ -135,7 +134,10 @@ const CombinedStakingCard = ({
                 </div>
               </div>
             </div>
+          </div>
 
+          {/* Middle Column - Balance Info */}
+          <div className="space-y-4">
             <div className="space-y-3">
               <div className="p-4 rounded-lg border border-border/50 bg-background/50">
                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Available Balance</p>
@@ -156,10 +158,8 @@ const CombinedStakingCard = ({
                 )}
               </div>
             </div>
-          </div>
 
           {/* Middle Column - Time Remaining */}
-          <div className="space-y-4">
             {isStaked && (
               <div className="p-4 rounded-lg border border-border/50 bg-background/50">
                 <div className="flex items-center gap-2 mb-2">
