@@ -16,14 +16,16 @@ interface VoteConfirmationModalProps {
   candidate: any; // Can be single candidate object or array of candidate IDs
   transactionHash: string;
   onVoteMore: () => void;
+  isVoteChange?: boolean;
 }
 
-const VoteConfirmationModal = ({
-  isOpen,
-  onClose,
-  candidate,
-  transactionHash,
-  onVoteMore
+const VoteConfirmationModal = ({ 
+  isOpen, 
+  onClose, 
+  candidate, 
+  transactionHash, 
+  onVoteMore,
+  isVoteChange = false
 }: VoteConfirmationModalProps) => {
   const isMultipleVotes = Array.isArray(candidate);
   const voteCount = isMultipleVotes ? candidate.length : 1;
@@ -36,13 +38,15 @@ const VoteConfirmationModal = ({
           </div>
           
           <DialogTitle className="text-xl font-semibold">
-            {isMultipleVotes ? `${voteCount} Votes` : 'Vote'} Cast Successfully!
+            {isVoteChange ? 'Votes Updated Successfully!' : 
+             isMultipleVotes ? `${voteCount} Votes` : 'Vote'} {!isVoteChange && 'Cast Successfully!'}
           </DialogTitle>
           
           <DialogDescription className="text-center">
-            {isMultipleVotes 
-              ? `Your ${voteCount} votes have been recorded on the blockchain`
-              : 'Your vote has been recorded on the blockchain'
+            {isVoteChange ? 'Your vote selection has been updated on the blockchain' :
+             isMultipleVotes 
+               ? `Your ${voteCount} votes have been recorded on the blockchain`
+               : 'Your vote has been recorded on the blockchain'
             }
           </DialogDescription>
         </DialogHeader>

@@ -19,6 +19,7 @@ interface CandidateCardProps {
   canSelect?: boolean;
   twitterUrl?: string;
   discordUrl?: string;
+  isVotingPeriodOpen?: boolean;
 }
 
 const CandidateCard = ({
@@ -33,7 +34,8 @@ const CandidateCard = ({
   onSelect,
   canSelect = true,
   twitterUrl,
-  discordUrl
+  discordUrl,
+  isVotingPeriodOpen = true
 }: CandidateCardProps) => {
   const votePercentage = totalVotes > 0 ? (votes / totalVotes) * 100 : 0;
 
@@ -84,8 +86,10 @@ const CandidateCard = ({
             </div>
           </div>
           {isVoted && (
-            <Badge className="bg-green-500 text-white">
-              ✓ Voted
+            <Badge className={cn(
+              isVotingPeriodOpen ? "bg-green-500 text-white" : "bg-gray-500 text-white"
+            )}>
+              ✓ Voted {!isVotingPeriodOpen && "• Locked"}
             </Badge>
           )}
           {isVoting && (
@@ -123,16 +127,20 @@ const CandidateCard = ({
         {/* Select Button */}
         <Button
           onClick={() => onSelect?.(id)}
-          disabled={!canSelect || isVoting || isVoted}
-          variant={isSelected && !isVoted ? "default" : isVoted ? "default" : "outline"}
+          disabled={!canSelect || isVoting || (isVoted && !isVotingPeriodOpen)}
+          variant={isSelected && !isVoted ? "default" : isVoted && !isVotingPeriodOpen ? "default" : isVoted ? "outline" : "outline"}
           className={cn(
             "w-full",
             isSelected && !isVoted && "bg-primary hover:bg-primary/90",
-            isVoted && "bg-green-500 hover:bg-green-500/90",
+            isVoted && !isVotingPeriodOpen && "bg-gray-500 hover:bg-gray-500/90",
+            isVoted && isVotingPeriodOpen && "bg-green-500/20 border-green-500 text-green-700 dark:text-green-300 hover:bg-green-500/30",
             isVoting && "bg-blue-500 hover:bg-blue-500/90"
           )}
         >
-          {isVoting ? 'Processing Vote...' : isVoted ? '✓ Vote Cast' : isSelected ? '✓ Selected' : 'Select Candidate'}
+          {isVoting ? 'Processing Vote...' : 
+           isVoted && !isVotingPeriodOpen ? '✓ Vote Locked' :
+           isVoted && isVotingPeriodOpen ? 'Change Vote' :
+           isSelected ? '✓ Selected' : 'Select Candidate'}
         </Button>
       </CardContent>
     </Card>

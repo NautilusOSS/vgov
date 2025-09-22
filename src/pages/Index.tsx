@@ -98,6 +98,11 @@ const Index = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [lastVotedCandidate, setLastVotedCandidate] = useState<any>(null);
   const [lastTransactionHash, setLastTransactionHash] = useState('');
+  const [isVoteChange, setIsVoteChange] = useState(false);
+  
+  // Voting period state - ends 24 hours before election
+  const [isVotingPeriodOpen, setIsVotingPeriodOpen] = useState(true);
+  const votingDeadline = new Date('2024-10-14T23:59:59'); // 24 hours before election ends
   
   // Staking state
   const [voiBalance] = useState(75000); // Mock balance - user has enough
@@ -195,6 +200,15 @@ const Index = () => {
       return;
     }
 
+    if (!isVotingPeriodOpen) {
+      toast({
+        title: "Voting Period Closed",
+        description: "Vote changes are no longer allowed.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     // Toggle selection
     setSelectedCandidates(prev => {
       const newSet = new Set(prev);
@@ -225,6 +239,11 @@ const Index = () => {
       return;
     }
 
+    const hasVoted = votedCandidates.size > 0;
+    const isChangingVotes = hasVoted && Array.from(selectedCandidates).some(id => !votedCandidates.has(id)) || 
+                            Array.from(votedCandidates).some(id => !selectedCandidates.has(id));
+
+    setIsVoteChange(isChangingVotes);
     setVotingCandidates(new Set(selectedCandidates));
     
     try {
@@ -234,7 +253,7 @@ const Index = () => {
       // Generate mock transaction hash
       const transactionHash = `0x${Math.random().toString(16).substr(2, 64)}`;
       
-      // Update voted candidates
+      // Update voted candidates (replace previous votes with new selection)
       setVotedCandidates(new Set(selectedCandidates));
       setVotingCandidates(new Set());
       setSelectedCandidates(new Set());
@@ -243,6 +262,13 @@ const Index = () => {
       setLastVotedCandidate(Array.from(selectedCandidates));
       setLastTransactionHash(transactionHash);
       setShowConfirmationModal(true);
+      
+      if (isChangingVotes) {
+        toast({
+          title: "Votes Updated Successfully",
+          description: "Your vote selection has been updated.",
+        });
+      }
       
     } catch (error) {
       setVotingCandidates(new Set());
@@ -346,15 +372,25 @@ const Index = () => {
               {selectedCandidates.size > 0 && (
                 <Button 
                   onClick={handleSubmitVotes}
-                  disabled={votingCandidates.size > 0}
+                  disabled={votingCandidates.size > 0 || !isVotingPeriodOpen}
                   size="lg"
                   className="bg-voi-gradient hover:opacity-90 px-8"
                 >
-                  {votingCandidates.size > 0 ? 'Submitting Votes...' : `Submit ${selectedCandidates.size} Vote${selectedCandidates.size === 1 ? '' : 's'}`}
+                  {votingCandidates.size > 0 ? 'Processing...' : 
+                   votedCandidates.size > 0 ? `Update ${selectedCandidates.size} Vote${selectedCandidates.size === 1 ? '' : 's'}` :
+                   `Submit ${selectedCandidates.size} Vote${selectedCandidates.size === 1 ? '' : 's'}`}
                 </Button>
+              )}
+              {votedCandidates.size > 0 && selectedCandidates.size === 0 && isVotingPeriodOpen && (
+                <div className="text-sm text-blue-600 dark:text-blue-400">
+                  Select candidates to change your votes
+                </div>
               )}
               <div className="text-sm text-muted-foreground">
                 Selected: {selectedCandidates.size}/{MAX_VOTES} • Voted: {votedCandidates.size}/{MAX_VOTES}
+                {!isVotingPeriodOpen && (
+                  <span className="text-red-500 ml-2">• Voting Closed</span>
+                )}
               </div>
             </div>
           )}
@@ -387,7 +423,8 @@ const Index = () => {
                   isVoted={votedCandidates.has(candidate.id)}
                   isVoting={votingCandidates.has(candidate.id)}
                   onSelect={handleCandidateSelect}
-                  canSelect={isStaked && !votedCandidates.has(candidate.id)}
+                  canSelect={isStaked && isVotingPeriodOpen}
+                  isVotingPeriodOpen={isVotingPeriodOpen}
                 />
               ))}
             </div>
@@ -410,6 +447,7 @@ const Index = () => {
           candidate={lastVotedCandidate}
           transactionHash={lastTransactionHash}
           onVoteMore={handleVoteMore}
+          isVoteChange={isVoteChange}
         />
       )}
     </div>
