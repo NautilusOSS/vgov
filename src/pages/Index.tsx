@@ -1,63 +1,114 @@
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
-import GovernanceStats from '@/components/GovernanceStats';
-import ProposalCard from '@/components/ProposalCard';
+import ElectionStats from '@/components/ElectionStats';
+import CandidateCard from '@/components/CandidateCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Filter, Plus } from 'lucide-react';
+import { Search, Filter } from 'lucide-react';
 
-// Mock data - in real app this would come from your backend
-const mockProposals = [
+// Mock candidates - in real app this would come from your backend
+const mockCandidates = [
   {
     id: '1',
-    title: 'Increase Block Rewards for Validators',
-    description: 'Proposal to increase the block rewards from 100 VOI to 150 VOI per block to incentivize more validators to participate in network security.',
-    status: 'active' as const,
-    votesFor: 1250,
-    votesAgainst: 340,
-    totalVotes: 1590,
-    endDate: '2024-10-15T23:59:59Z'
+    name: 'Sarah Chen',
+    title: 'Blockchain Developer & DeFi Expert',
+    description: 'Former core developer at major DeFi protocols with 8+ years experience in blockchain technology. Focused on technical excellence and community-driven development.',
+    location: 'San Francisco, CA',
+    experience: '8+ Years',
+    votes: 234
   },
   {
     id: '2',
-    title: 'Community Treasury Allocation',
-    description: 'Allocate 500,000 VOI from the community treasury to fund educational initiatives and developer programs for the next quarter.',
-    status: 'active' as const,
-    votesFor: 890,
-    votesAgainst: 210,
-    totalVotes: 1100,
-    endDate: '2024-10-20T23:59:59Z'
+    name: 'Marcus Rodriguez',
+    title: 'Security Researcher & Auditor',
+    description: 'Leading security expert specializing in smart contract auditing and protocol security. Has secured over $2B in DeFi protocols.',
+    location: 'Austin, TX',
+    experience: '6+ Years',
+    votes: 198
   },
   {
     id: '3',
-    title: 'Network Fee Structure Update',
-    description: 'Reduce transaction fees by 25% to improve user experience and encourage more adoption of the Voi Network.',
-    status: 'passed' as const,
-    votesFor: 1800,
-    votesAgainst: 450,
-    totalVotes: 2250,
-    endDate: '2024-09-30T23:59:59Z'
+    name: 'Aisha Patel',
+    title: 'Community Leader & Educator',
+    description: 'Passionate about blockchain education and community building. Has grown multiple Web3 communities from zero to thousands of active members.',
+    location: 'London, UK',
+    experience: '5+ Years',
+    votes: 167
   },
   {
     id: '4',
-    title: 'Governance Token Staking Rewards',
-    description: 'Implement staking rewards for governance token holders who participate in voting, providing 5% APY for active participants.',
-    status: 'pending' as const,
-    votesFor: 0,
-    votesAgainst: 0,
-    totalVotes: 0,
-    endDate: '2024-11-01T23:59:59Z'
+    name: 'David Kim',
+    title: 'Economics & Tokenomics Specialist',
+    description: 'PhD in Economics with focus on cryptocurrency markets and tokenomics design. Previously advised multiple successful DeFi protocols.',
+    location: 'Seoul, South Korea',
+    experience: '10+ Years',
+    votes: 189
+  },
+  {
+    id: '5',
+    name: 'Elena Kowalski',
+    title: 'Legal & Regulatory Expert',
+    description: 'Blockchain lawyer specializing in DeFi regulations and compliance. Helps navigate the evolving regulatory landscape.',
+    location: 'Berlin, Germany',
+    experience: '7+ Years',
+    votes: 145
+  },
+  {
+    id: '6',
+    name: 'James Thompson',
+    title: 'Infrastructure & DevOps Engineer',
+    description: 'Expert in blockchain infrastructure and node operations. Built scalable systems for major Layer 1 and Layer 2 protocols.',
+    location: 'Toronto, Canada',
+    experience: '9+ Years',
+    votes: 156
+  },
+  {
+    id: '7',
+    name: 'Maria Santos',
+    title: 'Product Manager & UX Designer',
+    description: 'Product leader focused on user experience in DeFi. Led product development for consumer-facing blockchain applications.',
+    location: 'Barcelona, Spain',
+    experience: '6+ Years',
+    votes: 134
+  },
+  {
+    id: '8',
+    name: 'Ahmed Hassan',
+    title: 'Research & Development Lead',
+    description: 'Blockchain researcher working on consensus mechanisms and scalability solutions. Published numerous papers on distributed systems.',
+    location: 'Dubai, UAE',
+    experience: '8+ Years',
+    votes: 178
+  },
+  {
+    id: '9',
+    name: 'Lisa Wang',
+    title: 'Growth & Business Development',
+    description: 'Business development expert with track record of growing blockchain startups. Specialized in partnerships and ecosystem development.',
+    location: 'Singapore',
+    experience: '7+ Years',
+    votes: 123
+  },
+  {
+    id: '10',
+    name: 'Robert Johnson',
+    title: 'Finance & Treasury Management',
+    description: 'Former traditional finance executive turned DeFi expert. Specialized in treasury management and risk assessment for DAOs.',
+    location: 'New York, NY',
+    experience: '12+ Years',
+    votes: 142
   }
 ];
+
+const MAX_VOTES = 5;
 
 const Index = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [walletAddress] = useState('0x742d35cc6bf5b46c1d...89a2');
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('all');
-  const [userVotes, setUserVotes] = useState<Record<string, 'for' | 'against'>>({});
+  const [selectedCandidates, setSelectedCandidates] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   const handleConnectWallet = () => {
@@ -70,14 +121,14 @@ const Index = () => {
 
   const handleDisconnect = () => {
     setIsConnected(false);
-    setUserVotes({});
+    setSelectedCandidates(new Set());
     toast({
       title: "Wallet Disconnected",
       description: "Your wallet has been disconnected",
     });
   };
 
-  const handleVote = (proposalId: string, vote: 'for' | 'against') => {
+  const handleCandidateVote = (candidateId: string) => {
     if (!isConnected) {
       toast({
         title: "Connect Wallet",
@@ -87,26 +138,46 @@ const Index = () => {
       return;
     }
 
-    setUserVotes(prev => ({ ...prev, [proposalId]: vote }));
-    toast({
-      title: "Vote Submitted",
-      description: `Your vote "${vote}" has been recorded for this proposal.`,
-    });
+    const newSelected = new Set(selectedCandidates);
+    
+    if (newSelected.has(candidateId)) {
+      newSelected.delete(candidateId);
+      toast({
+        title: "Candidate Deselected",
+        description: `You have ${MAX_VOTES - newSelected.size} votes remaining.`,
+      });
+    } else if (newSelected.size < MAX_VOTES) {
+      newSelected.add(candidateId);
+      toast({
+        title: "Candidate Selected",
+        description: `You have ${MAX_VOTES - newSelected.size} votes remaining.`,
+      });
+    } else {
+      toast({
+        title: "Maximum Votes Reached",
+        description: `You can only vote for ${MAX_VOTES} candidates. Deselect a candidate first.`,
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setSelectedCandidates(newSelected);
   };
 
-  const filteredProposals = mockProposals.filter(proposal => {
-    const matchesSearch = proposal.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         proposal.description.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    if (activeTab === 'all') return matchesSearch;
-    return matchesSearch && proposal.status === activeTab;
+  const totalVotes = mockCandidates.reduce((sum, candidate) => sum + candidate.votes, 0);
+  
+  const filteredCandidates = mockCandidates.filter(candidate => {
+    const matchesSearch = candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         candidate.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         candidate.description.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesSearch;
   });
 
   const stats = {
-    totalProposals: mockProposals.length,
-    activeProposals: mockProposals.filter(p => p.status === 'active').length,
+    totalCandidates: mockCandidates.length,
     totalVoters: 2847,
-    participationRate: 73
+    participationRate: 73,
+    votesRemaining: MAX_VOTES - selectedCandidates.size
   };
 
   return (
@@ -122,11 +193,11 @@ const Index = () => {
         {/* Hero Section */}
         <div className="text-center space-y-4 py-12">
           <h2 className="text-4xl font-bold bg-voi-gradient bg-clip-text text-transparent">
-            Voi Network Council Governance
+            Voi Network Council Elections
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Participate in the decentralized governance of Voi Network. 
-            Vote on proposals that shape the future of our ecosystem.
+            Vote for up to 5 candidates to represent you on the Voi Network Council. 
+            Shape the future of our decentralized ecosystem.
           </p>
           {!isConnected && (
             <Button 
@@ -134,13 +205,13 @@ const Index = () => {
               size="lg"
               className="bg-voi-gradient hover:opacity-90 transition-opacity shadow-voi"
             >
-              Get Started - Connect Wallet
+              Connect Wallet to Vote
             </Button>
           )}
         </div>
 
         {/* Stats */}
-        <GovernanceStats {...stats} />
+        <ElectionStats {...stats} />
 
         {/* Search and Filters */}
         <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
@@ -148,7 +219,7 @@ const Index = () => {
             <div className="relative flex-1 max-w-md">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={16} />
               <Input
-                placeholder="Search proposals..."
+                placeholder="Search candidates..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -159,51 +230,49 @@ const Index = () => {
             </Button>
           </div>
           
-          {isConnected && (
+          {isConnected && selectedCandidates.size > 0 && (
             <Button className="bg-voi-gradient hover:opacity-90">
-              <Plus size={16} className="mr-2" />
-              Create Proposal
+              Submit Votes ({selectedCandidates.size}/{MAX_VOTES})
             </Button>
           )}
         </div>
 
-        {/* Proposals Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:grid-cols-4">
-            <TabsTrigger value="all">All Proposals</TabsTrigger>
-            <TabsTrigger value="active">Active</TabsTrigger>
-            <TabsTrigger value="passed">Passed</TabsTrigger>
-            <TabsTrigger value="pending">Pending</TabsTrigger>
-          </TabsList>
+        {/* Candidates Section */}
+        <div className="space-y-6">
+          <div className="text-center">
+            <h3 className="text-2xl font-semibold mb-2">Council Candidates</h3>
+            <p className="text-muted-foreground">
+              Select up to {MAX_VOTES} candidates to represent your interests on the Voi Network Council
+            </p>
+          </div>
 
-          <TabsContent value={activeTab} className="space-y-6">
-            {filteredProposals.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-lg text-muted-foreground">No proposals found</p>
-                <p className="text-sm text-muted-foreground mt-2">
-                  {searchTerm ? 'Try adjusting your search terms' : 'Check back later for new proposals'}
-                </p>
-              </div>
-            ) : (
-              <div className="grid gap-6">
-                {filteredProposals.map((proposal) => (
-                  <ProposalCard
-                    key={proposal.id}
-                    {...proposal}
-                    onVote={handleVote}
-                    hasVoted={!!userVotes[proposal.id]}
-                    userVote={userVotes[proposal.id]}
-                  />
-                ))}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
+          {filteredCandidates.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-lg text-muted-foreground">No candidates found</p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Try adjusting your search terms
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2">
+              {filteredCandidates.map((candidate) => (
+                <CandidateCard
+                  key={candidate.id}
+                  {...candidate}
+                  totalVotes={totalVotes}
+                  isSelected={selectedCandidates.has(candidate.id)}
+                  onVote={handleCandidateVote}
+                  canVote={selectedCandidates.has(candidate.id) || selectedCandidates.size < MAX_VOTES}
+                />
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Footer */}
         <footer className="text-center pt-12 pb-6 border-t border-border/50">
           <p className="text-sm text-muted-foreground">
-            Powered by Voi Network • Decentralized Governance Platform
+            Powered by Voi Network • Council Elections Platform
           </p>
         </footer>
       </main>

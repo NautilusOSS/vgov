@@ -41,50 +41,50 @@ const StatsCard = ({ title, value, icon, description, trend }: StatsCardProps) =
   </Card>
 );
 
-interface GovernanceStatsProps {
-  totalProposals: number;
-  activeProposals: number;
+interface ElectionStatsProps {
+  totalCandidates: number;
   totalVoters: number;
   participationRate: number;
+  votesRemaining: number;
 }
 
-const GovernanceStats = ({
-  totalProposals,
-  activeProposals,
-  totalVoters,
-  participationRate
-}: GovernanceStatsProps) => {
+const ElectionStats = ({ 
+  totalCandidates, 
+  totalVoters, 
+  participationRate,
+  votesRemaining
+}: ElectionStatsProps) => {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <StatsCard
-        title="Total Proposals"
-        value={totalProposals}
+        title="Total Candidates"
+        value={totalCandidates}
         icon={<Vote size={20} />}
-        description="All time proposals"
+        description="Running for council"
         trend={{ value: 12, isPositive: true }}
       />
       <StatsCard
-        title="Active Proposals"
-        value={activeProposals}
+        title="Votes Remaining"
+        value={votesRemaining}
         icon={<Clock size={20} />}
-        description="Currently open for voting"
+        description={`You can vote for ${votesRemaining} more candidates`}
       />
       <StatsCard
         title="Total Voters"
         value={totalVoters.toLocaleString()}
         icon={<Users size={20} />}
-        description="Registered council members"
+        description="Registered voters"
         trend={{ value: 8, isPositive: true }}
       />
       <StatsCard
         title="Participation Rate"
         value={`${participationRate}%`}
         icon={<TrendingUp size={20} />}
-        description="Average voting participation"
+        description="Election participation"
         trend={{ value: 5, isPositive: true }}
       />
     </div>
   );
 };
 
-export default GovernanceStats;
+export default ElectionStats;
