@@ -172,13 +172,15 @@ const CombinedStakingCard = ({
               </div>
               <p className="text-3xl font-bold text-primary mb-4">50,000 <span className="text-lg">VOI</span></p>
               
-              <div className="mb-4 p-3 rounded-lg bg-background/50 border border-border/50">
-                <div className="flex items-center gap-2 mb-1">
-                  <Clock className="h-3 w-3 text-muted-foreground" />
-                  <span className="text-sm font-medium">Votes Remaining</span>
+              {isStaked && (
+                <div className="mb-4 p-3 rounded-lg bg-background/50 border border-border/50">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Clock className="h-3 w-3 text-muted-foreground" />
+                    <span className="text-sm font-medium">Votes Remaining</span>
+                  </div>
+                  <p className="text-lg font-bold">{votesRemaining} <span className="text-sm font-normal text-muted-foreground">/ 5 candidates</span></p>
                 </div>
-                <p className="text-lg font-bold">{votesRemaining} <span className="text-sm font-normal text-muted-foreground">/ 5 candidates</span></p>
-              </div>
+              )}
               
               <div className="space-y-2 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
