@@ -139,10 +139,10 @@ const CombinedStakingCard = ({
                 <Clock className="h-3 w-3 text-muted-foreground" />
                 <span className="text-sm font-medium">Votes Remaining</span>
               </div>
-              <p className="text-lg font-bold mb-4">{isStaked ? votesRemaining : 0} <span className="text-sm font-normal text-muted-foreground">/ 5 candidates</span></p>
+              <p className="text-lg font-bold">{isStaked ? votesRemaining : 0} <span className="text-sm font-normal text-muted-foreground">/ 5 candidates</span></p>
               
               {stakedAmount > 0 && (
-                <div className="space-y-2 text-sm text-muted-foreground">
+                <div className="space-y-2 text-sm text-muted-foreground mt-4">
                   <div className="flex justify-between text-xs text-muted-foreground">
                     <span>Progress</span>
                     <span>{stakingProgress.toFixed(0)}%</span>
