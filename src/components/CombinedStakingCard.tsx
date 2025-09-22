@@ -42,10 +42,9 @@ const CombinedStakingCard = ({
   onUnstake 
 }: CombinedStakingCardProps) => {
   const [timeRemaining, setTimeRemaining] = useState<string>('');
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const { toast } = useToast();
   const requiredStake = 50000;
-  const canStake = voiBalance >= requiredStake && acceptedTerms && !isStaked;
+  const canStake = voiBalance >= requiredStake && !isStaked;
   const now = new Date();
   const canUnstake = now > lockEndDate;
 
@@ -74,16 +73,7 @@ const CombinedStakingCard = ({
 
   const stakingProgress = (stakedAmount / 50000) * 100;
 
-  const handleStake = () => {
-    if (!acceptedTerms) {
-      toast({
-        title: "Terms Required",
-        description: "Please accept the staking terms to continue",
-        variant: "destructive"
-      });
-      return;
-    }
-    
+  const handleStake = () => {    
     if (voiBalance < requiredStake) {
       toast({
         title: "Insufficient Balance",
@@ -261,22 +251,6 @@ const CombinedStakingCard = ({
                   )}
                 </div>
 
-                {/* Terms */}
-                <div className="p-4 rounded-lg border border-border/50 bg-background/50">
-                  <div className="flex items-start space-x-3">
-                    <Checkbox 
-                      id="terms" 
-                      checked={acceptedTerms}
-                      onCheckedChange={(checked) => setAcceptedTerms(checked === true)}
-                      className="mt-1"
-                    />
-                    <label htmlFor="terms" className="text-sm leading-relaxed cursor-pointer">
-                      I understand my 50,000 VOI will be locked until October 15, 2024, and I agree to the{' '}
-                      <span className="text-primary underline font-medium">staking terms</span>
-                    </label>
-                  </div>
-                </div>
-
                 {/* Stake Button */}
                 <Button 
                   onClick={handleStake}
@@ -297,11 +271,9 @@ const CombinedStakingCard = ({
                   )}
                 </Button>
 
-                {!acceptedTerms && voiBalance >= requiredStake && (
-                  <p className="text-xs text-muted-foreground text-center">
-                    50,000 VOI will be locked until October 15, 2025
-                  </p>
-                )}
+                <p className="text-xs text-muted-foreground text-center">
+                  50,000 VOI will be locked until October 15, 2025
+                </p>
               </div>
             )}
           </div>
