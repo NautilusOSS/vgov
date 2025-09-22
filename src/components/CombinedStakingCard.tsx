@@ -136,31 +136,6 @@ const CombinedStakingCard = ({
                 )}
               </div>
             </div>
-
-            {/* Status Badge */}
-            <div className="flex items-center gap-2 p-3 rounded-lg bg-background/50 border border-border/50">
-              {isStaked ? (
-                <>
-                  <div className="p-1 rounded-full bg-green-500/10">
-                    <CheckCircle className="h-3 w-3 text-green-500" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-green-700">Voting Enabled</p>
-                    <p className="text-xs text-muted-foreground">You can select candidates</p>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="p-1 rounded-full bg-amber-500/10">
-                    <AlertCircle className="h-3 w-3 text-amber-500" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-amber-700">Staking Required</p>
-                    <p className="text-xs text-muted-foreground">Complete staking to vote</p>
-                  </div>
-                </>
-              )}
-            </div>
           </div>
 
           {/* Middle Column - Requirements/Info */}
