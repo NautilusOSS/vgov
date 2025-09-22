@@ -96,66 +96,100 @@ const CombinedStakingCard = ({
 
   return (
     <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
-      <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <Coins className="h-5 w-5 text-primary" />
+      <CardHeader className="pb-6">
+        <CardTitle className="flex items-center gap-3 text-xl">
+          <div className="p-2 rounded-lg bg-primary/10">
+            <Coins className="h-5 w-5 text-primary" />
+          </div>
           {isStaked ? 'VOI Staking Complete' : 'Stake VOI to Vote'}
+          {isStaked && (
+            <Badge className="bg-green-500/10 text-green-700 border-green-500/20 ml-auto">
+              <CheckCircle className="h-3 w-3 mr-1" />
+              Active
+            </Badge>
+          )}
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="grid lg:grid-cols-2 gap-6">
-          {/* Left Column - Status & Balance Info */}
+      <CardContent className="space-y-6">
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Left Column - Balance Overview */}
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">Available Balance</p>
-                <p className="text-lg font-semibold">{voiBalance.toLocaleString()} VOI</p>
+            <div className="space-y-3">
+              <div className="p-4 rounded-lg border border-border/50 bg-background/50">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Available Balance</p>
+                <p className="text-2xl font-bold">{voiBalance.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">VOI</span></p>
               </div>
-              <div className="space-y-1">
-                <p className="text-sm text-muted-foreground">Staked Amount</p>
-                <p className="text-lg font-semibold text-primary">{stakedAmount.toLocaleString()} VOI</p>
+              
+              <div className="p-4 rounded-lg border border-primary/20 bg-primary/5">
+                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Staked Amount</p>
+                <p className="text-2xl font-bold text-primary">{stakedAmount.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">VOI</span></p>
+                {stakedAmount > 0 && (
+                  <div className="mt-3">
+                    <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                      <span>Progress</span>
+                      <span>{stakingProgress.toFixed(0)}%</span>
+                    </div>
+                    <Progress value={stakingProgress} className="h-1.5" />
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Staking Progress */}
-            {stakedAmount > 0 && (
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span>Staking Progress</span>
-                  <span>{stakingProgress.toFixed(0)}%</span>
-                </div>
-                <Progress value={stakingProgress} className="h-2" />
-              </div>
-            )}
-
             {/* Status Badge */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 p-3 rounded-lg bg-background/50 border border-border/50">
               {isStaked ? (
                 <>
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <Badge variant="secondary" className="bg-green-500/10 text-green-700 border-green-500/20">
-                    Staking Complete - Voting Enabled
-                  </Badge>
+                  <div className="p-1 rounded-full bg-green-500/10">
+                    <CheckCircle className="h-3 w-3 text-green-500" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-green-700">Voting Enabled</p>
+                    <p className="text-xs text-muted-foreground">You can select candidates</p>
+                  </div>
                 </>
               ) : (
                 <>
-                  <AlertCircle className="h-4 w-4 text-amber-500" />
-                  <Badge variant="secondary" className="bg-amber-500/10 text-amber-700 border-amber-500/20">
-                    Staking Required for Voting
-                  </Badge>
+                  <div className="p-1 rounded-full bg-amber-500/10">
+                    <AlertCircle className="h-3 w-3 text-amber-500" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-amber-700">Staking Required</p>
+                    <p className="text-xs text-muted-foreground">Complete staking to vote</p>
+                  </div>
                 </>
               )}
             </div>
+          </div>
 
-            {/* Lock Period Info */}
-            {isStaked && (
-              <div className="pt-2 border-t border-border/50">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Clock className="h-4 w-4" />
-                  <span>Lock period ends: <strong className="text-foreground">{timeRemaining}</strong></span>
+          {/* Middle Column - Requirements/Info */}
+          <div className="space-y-4">
+            <div className="p-4 rounded-lg border border-primary/20 bg-primary/5">
+              <div className="flex items-center gap-2 mb-3">
+                <Lock className="h-4 w-4 text-primary" />
+                <span className="font-semibold text-primary">Required Stake</span>
+              </div>
+              <p className="text-3xl font-bold text-primary mb-2">50,000 <span className="text-lg">VOI</span></p>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-3 w-3" />
+                  <span>Lock Period: Oct 1-15, 2024</span>
                 </div>
+                <div className="flex items-start gap-2">
+                  <AlertTriangle className="h-3 w-3 mt-0.5 text-amber-500" />
+                  <span className="text-xs leading-relaxed">Tokens locked during election period</span>
+                </div>
+              </div>
+            </div>
+
+            {isStaked && (
+              <div className="p-4 rounded-lg border border-border/50 bg-background/50">
+                <div className="flex items-center gap-2 mb-2">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-medium text-sm">Time Remaining</span>
+                </div>
+                <p className="text-lg font-bold text-foreground">{timeRemaining}</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Your 50,000 VOI will be unlocked automatically after the election period (Oct 15, 2024)
+                  Until automatic unlock
                 </p>
               </div>
             )}
@@ -166,32 +200,24 @@ const CombinedStakingCard = ({
             {isStaked ? (
               /* Unstaking Section */
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-green-500/5 rounded-lg border border-green-500/20">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    <span className="font-medium text-green-700">Voting Enabled</span>
+                <div className="p-4 rounded-lg border border-green-500/20 bg-green-500/5">
+                  <div className="text-center space-y-2">
+                    <CheckCircle2 className="h-8 w-8 text-green-500 mx-auto" />
+                    <p className="font-semibold text-green-700">Staking Complete</p>
+                    <p className="text-sm text-muted-foreground">You can now participate in voting</p>
                   </div>
-                  <span className="text-lg font-bold text-green-700">50,000 VOI</span>
                 </div>
 
-                <Separator />
-
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between p-3 rounded-lg bg-background/50 border border-border/50">
                     <span className="text-sm font-medium">Unlock Status</span>
                     <Badge 
                       variant="secondary" 
                       className={canUnstake ? "bg-blue-500/10 text-blue-700 border-blue-500/20" : "bg-amber-500/10 text-amber-700 border-amber-500/20"}
                     >
-                      {canUnstake ? "✓ Can Unstake" : "🔒 Locked"}
+                      {canUnstake ? "✓ Available" : "🔒 Locked"}
                     </Badge>
                   </div>
-                  
-                  {!canUnstake && (
-                    <p className="text-xs text-muted-foreground">
-                      Your VOI will automatically unlock after October 15, 2024
-                    </p>
-                  )}
 
                   <Button 
                     onClick={onUnstake}
@@ -203,7 +229,7 @@ const CombinedStakingCard = ({
                     {isUnstaking ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                        Processing Unstake...
+                        Processing...
                       </>
                     ) : canUnstake ? (
                       <>
@@ -217,52 +243,38 @@ const CombinedStakingCard = ({
                       </>
                     )}
                   </Button>
+
+                  {!canUnstake && (
+                    <p className="text-xs text-muted-foreground text-center px-2">
+                      Your VOI will unlock automatically after the election period ends
+                    </p>
+                  )}
                 </div>
               </div>
             ) : (
               /* Staking Section */
               <div className="space-y-4">
-                {/* Requirement Info */}
-                <div className="flex items-center justify-between p-3 bg-primary/5 rounded-lg border border-primary/20">
-                  <div className="flex items-center gap-2">
-                    <Lock className="h-4 w-4 text-primary" />
-                    <span className="font-medium">Required Stake</span>
-                  </div>
-                  <span className="text-lg font-bold text-primary">50,000 VOI</span>
-                </div>
-
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                    <span><strong>Lock Period:</strong> October 1-15, 2024</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4 text-amber-500" />
-                    <span>Your VOI will be locked during the entire election period</span>
-                  </div>
-                </div>
-
-                <Separator />
-
                 {/* Balance Check */}
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Your VOI Balance</span>
-                    <span className={voiBalance >= requiredStake ? "text-green-600 font-medium" : "text-red-500 font-medium"}>
+                <div className="p-4 rounded-lg border border-border/50 bg-background/50">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium">Your Balance</span>
+                    <span className={`font-bold ${voiBalance >= requiredStake ? "text-green-600" : "text-red-500"}`}>
                       {voiBalance.toLocaleString()} VOI
                     </span>
                   </div>
-                  {voiBalance < requiredStake && (
+                  {voiBalance < requiredStake ? (
                     <p className="text-xs text-red-500">
-                      Insufficient balance. You need {(requiredStake - voiBalance).toLocaleString()} more VOI to participate.
+                      Need {(requiredStake - voiBalance).toLocaleString()} more VOI to participate
+                    </p>
+                  ) : (
+                    <p className="text-xs text-green-600">
+                      ✓ Sufficient balance for staking
                     </p>
                   )}
                 </div>
 
-                <Separator />
-
                 {/* Terms */}
-                <div className="space-y-3">
+                <div className="p-4 rounded-lg border border-border/50 bg-background/50">
                   <div className="flex items-start space-x-3">
                     <Checkbox 
                       id="terms" 
@@ -271,8 +283,8 @@ const CombinedStakingCard = ({
                       className="mt-1"
                     />
                     <label htmlFor="terms" className="text-sm leading-relaxed cursor-pointer">
-                      I understand that my 50,000 VOI will be locked until October 15, 2024, and I agree to the 
-                      <span className="text-primary underline ml-1">staking terms and conditions</span>
+                      I understand my 50,000 VOI will be locked until October 15, 2024, and I agree to the{' '}
+                      <span className="text-primary underline font-medium">staking terms</span>
                     </label>
                   </div>
                 </div>
@@ -297,9 +309,9 @@ const CombinedStakingCard = ({
                   )}
                 </Button>
 
-                {!acceptedTerms && (
+                {!acceptedTerms && voiBalance >= requiredStake && (
                   <p className="text-xs text-muted-foreground text-center">
-                    Please accept the terms to continue with staking
+                    Please accept the terms to continue
                   </p>
                 )}
               </div>
