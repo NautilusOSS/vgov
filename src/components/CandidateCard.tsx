@@ -12,7 +12,8 @@ interface CandidateCardProps {
   description: string;
   votes: number;
   totalVotes: number;
-  isSelected?: boolean;
+  isVoted?: boolean;
+  isVoting?: boolean;
   onVote?: (candidateId: string) => void;
   canVote?: boolean;
   twitterUrl?: string;
@@ -25,7 +26,8 @@ const CandidateCard = ({
   description,
   votes,
   totalVotes,
-  isSelected = false,
+  isVoted = false,
+  isVoting = false,
   onVote,
   canVote = true,
   twitterUrl,
@@ -36,7 +38,8 @@ const CandidateCard = ({
   return (
     <Card className={cn(
       "transition-all duration-300 hover:shadow-voi border-border/50",
-      isSelected && "ring-2 ring-primary bg-primary/5"
+      isVoted && "ring-2 ring-green-500 bg-green-500/5",
+      isVoting && "ring-2 ring-blue-500 bg-blue-500/5"
     )}>
       <CardHeader className="space-y-3">
         <div className="flex items-start justify-between">
@@ -77,9 +80,14 @@ const CandidateCard = ({
               </div>
             </div>
           </div>
-          {isSelected && (
-            <Badge className="bg-primary text-primary-foreground">
-              ✓ Selected
+          {isVoted && (
+            <Badge className="bg-green-500 text-white">
+              ✓ Voted
+            </Badge>
+          )}
+          {isVoting && (
+            <Badge className="bg-blue-500 text-white">
+              Voting...
             </Badge>
           )}
         </div>
@@ -107,14 +115,15 @@ const CandidateCard = ({
         {/* Vote Button */}
         <Button
           onClick={() => onVote?.(id)}
-          disabled={!canVote}
-          variant={isSelected ? "default" : "outline"}
+          disabled={!canVote || isVoting || isVoted}
+          variant={isVoted ? "default" : "outline"}
           className={cn(
             "w-full",
-            isSelected && "bg-primary hover:bg-primary/90"
+            isVoted && "bg-green-500 hover:bg-green-500/90",
+            isVoting && "bg-blue-500 hover:bg-blue-500/90"
           )}
         >
-          {isSelected ? '✓ Selected' : 'Select Candidate'}
+          {isVoting ? 'Signing Transaction...' : isVoted ? '✓ Vote Cast' : 'Vote for Candidate'}
         </Button>
       </CardContent>
     </Card>

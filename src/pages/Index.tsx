@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import ElectionStats from '@/components/ElectionStats';
 import CandidateCard from '@/components/CandidateCard';
 import CombinedStakingCard from '@/components/CombinedStakingCard';
+import VoteConfirmationModal from '@/components/VoteConfirmationModal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -92,6 +93,11 @@ const Index = () => {
   const [walletAddress] = useState('0x742d35cc6bf5b46c1d...89a2');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCandidates, setSelectedCandidates] = useState<Set<string>>(new Set());
+  const [votedCandidates, setVotedCandidates] = useState<Set<string>>(new Set());
+  const [votingCandidates, setVotingCandidates] = useState<Set<string>>(new Set());
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [lastVotedCandidate, setLastVotedCandidate] = useState<any>(null);
+  const [lastTransactionHash, setLastTransactionHash] = useState('');
   
   // Staking state
   const [voiBalance] = useState(75000); // Mock balance - user has enough
@@ -114,6 +120,8 @@ const Index = () => {
   const handleDisconnect = () => {
     setIsConnected(false);
     setSelectedCandidates(new Set());
+    setVotedCandidates(new Set());
+    setVotingCandidates(new Set());
     setIsStaked(false);
     setStakedAmount(0);
     toast({
@@ -159,7 +167,8 @@ const Index = () => {
     setStakedAmount(0);
     setIsStaked(false);
     setIsUnstaking(false);
-    setSelectedCandidates(new Set()); // Clear votes when unstaking
+    setSelectedCandidates(new Set()); // Clear selections when unstaking
+    setVotedCandidates(new Set()); // Clear votes when unstaking
     
     toast({
       title: "Unstaking Successful!",
@@ -167,7 +176,7 @@ const Index = () => {
     });
   };
 
-  const handleCandidateVote = (candidateId: string) => {
+  const handleCandidateVote = async (candidateId: string) => {
     if (!isConnected) {
       toast({
         title: "Connect Wallet",
@@ -186,30 +195,69 @@ const Index = () => {
       return;
     }
 
-    const newSelected = new Set(selectedCandidates);
-    
-    if (newSelected.has(candidateId)) {
-      newSelected.delete(candidateId);
+    // Check if already voted for this candidate
+    if (votedCandidates.has(candidateId)) {
       toast({
-        title: "Candidate Deselected",
-        description: `You have ${MAX_VOTES - newSelected.size} votes remaining.`,
-      });
-    } else if (newSelected.size < MAX_VOTES) {
-      newSelected.add(candidateId);
-      toast({
-        title: "Candidate Selected",
-        description: `You have ${MAX_VOTES - newSelected.size} votes remaining.`,
-      });
-    } else {
-      toast({
-        title: "Maximum Votes Reached",
-        description: `You can only vote for ${MAX_VOTES} candidates. Deselect a candidate first.`,
+        title: "Already Voted",
+        description: "You have already voted for this candidate",
         variant: "destructive"
       });
       return;
     }
+
+    // Check vote limit
+    if (votedCandidates.size >= MAX_VOTES) {
+      toast({
+        title: "Maximum Votes Reached",
+        description: `You can only vote for ${MAX_VOTES} candidates.`,
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Start voting transaction
+    setVotingCandidates(prev => new Set([...prev, candidateId]));
     
-    setSelectedCandidates(newSelected);
+    try {
+      // Simulate transaction signing and processing
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Generate mock transaction hash
+      const transactionHash = `0x${Math.random().toString(16).substr(2, 64)}`;
+      
+      // Update voted candidates
+      setVotedCandidates(prev => new Set([...prev, candidateId]));
+      setVotingCandidates(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(candidateId);
+        return newSet;
+      });
+      
+      // Find candidate for modal
+      const candidate = mockCandidates.find(c => c.id === candidateId);
+      if (candidate) {
+        setLastVotedCandidate(candidate);
+        setLastTransactionHash(transactionHash);
+        setShowConfirmationModal(true);
+      }
+      
+    } catch (error) {
+      setVotingCandidates(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(candidateId);
+        return newSet;
+      });
+      
+      toast({
+        title: "Vote Failed",
+        description: "Transaction failed. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleVoteMore = () => {
+    setShowConfirmationModal(false);
   };
 
   const totalVotes = mockCandidates.reduce((sum, candidate) => sum + candidate.votes, 0);
@@ -224,7 +272,7 @@ const Index = () => {
     totalCandidates: mockCandidates.length,
     totalVoters: 2847,
     participationRate: 73,
-    votesRemaining: MAX_VOTES - selectedCandidates.size
+    votesRemaining: MAX_VOTES - votedCandidates.size
   };
 
   return (
@@ -294,10 +342,10 @@ const Index = () => {
             </Button>
           </div>
           
-          {isConnected && isStaked && selectedCandidates.size > 0 && (
-            <Button className="bg-voi-gradient hover:opacity-90">
-              Submit Votes ({selectedCandidates.size}/{MAX_VOTES})
-            </Button>
+          {isConnected && isStaked && votedCandidates.size > 0 && (
+            <div className="text-sm text-muted-foreground">
+              Votes Cast: {votedCandidates.size}/{MAX_VOTES}
+            </div>
           )}
         </div>
 
@@ -324,9 +372,10 @@ const Index = () => {
                   key={candidate.id}
                   {...candidate}
                   totalVotes={totalVotes}
-                  isSelected={selectedCandidates.has(candidate.id)}
+                  isVoted={votedCandidates.has(candidate.id)}
+                  isVoting={votingCandidates.has(candidate.id)}
                   onVote={handleCandidateVote}
-                  canVote={isStaked && (selectedCandidates.has(candidate.id) || selectedCandidates.size < MAX_VOTES)}
+                  canVote={isStaked && !votedCandidates.has(candidate.id) && votedCandidates.size < MAX_VOTES}
                 />
               ))}
             </div>
@@ -340,6 +389,17 @@ const Index = () => {
           </p>
         </footer>
       </main>
+
+      {/* Vote Confirmation Modal */}
+      {showConfirmationModal && lastVotedCandidate && (
+        <VoteConfirmationModal
+          isOpen={showConfirmationModal}
+          onClose={() => setShowConfirmationModal(false)}
+          candidate={lastVotedCandidate}
+          transactionHash={lastTransactionHash}
+          onVoteMore={handleVoteMore}
+        />
+      )}
     </div>
   );
 };
