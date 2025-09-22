@@ -139,11 +139,23 @@ const CombinedStakingCard = ({
           {/* Middle Column - Balance Info */}
           <div className="space-y-4">
             <div className="p-4 rounded-lg border border-primary/20 bg-primary/5">
-              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-1">Staked Amount</p>
-              <p className="text-2xl font-bold text-primary">{stakedAmount.toLocaleString()} <span className="text-sm font-normal text-muted-foreground">VOI</span></p>
+              <div className="flex items-center gap-2 mb-3">
+                <Coins className="h-4 w-4 text-primary" />
+                <span className="font-semibold text-primary">Staked Amount</span>
+              </div>
+              <p className="text-3xl font-bold text-primary mb-4">{stakedAmount.toLocaleString()} <span className="text-lg">VOI</span></p>
+              
+              <div className="mb-4 p-3 rounded-lg bg-background/50 border border-border/50">
+                <div className="flex items-center gap-2 mb-1">
+                  <Clock className="h-3 w-3 text-muted-foreground" />
+                  <span className="text-sm font-medium">Votes Remaining</span>
+                </div>
+                <p className="text-lg font-bold">{isStaked ? votesRemaining : 0} <span className="text-sm font-normal text-muted-foreground">/ 5 candidates</span></p>
+              </div>
+              
               {stakedAmount > 0 && (
-                <div className="mt-3">
-                  <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <div className="flex justify-between text-xs text-muted-foreground">
                     <span>Progress</span>
                     <span>{stakingProgress.toFixed(0)}%</span>
                   </div>
