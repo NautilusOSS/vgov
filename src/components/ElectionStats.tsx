@@ -61,7 +61,6 @@ const ElectionStats = ({
         value={totalCandidates}
         icon={<Vote size={20} />}
         description="Running for council"
-        trend={{ value: 12, isPositive: true }}
       />
       <StatsCard
         title="Votes Remaining"
@@ -74,14 +73,12 @@ const ElectionStats = ({
         value={totalVoters.toLocaleString()}
         icon={<Users size={20} />}
         description="Registered voters"
-        trend={{ value: 8, isPositive: true }}
       />
       <StatsCard
         title="Participation Rate"
         value={`${participationRate}%`}
         icon={<TrendingUp size={20} />}
         description="Election participation"
-        trend={{ value: 5, isPositive: true }}
       />
     </div>
   );
