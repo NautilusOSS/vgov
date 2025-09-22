@@ -188,6 +188,14 @@ const CombinedStakingCard = ({
                   <AlertTriangle className="h-3 w-3 mt-0.5 text-amber-500" />
                   <span className="text-xs leading-relaxed">Tokens locked during election period</span>
                 </div>
+                {isStaked && (
+                  <div className="pt-2">
+                    <Badge className="bg-green-500/10 text-green-700 border-green-500/20 text-xs">
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      Eligible to Vote
+                    </Badge>
+                  </div>
+                )}
               </div>
             </div>
           </div>
