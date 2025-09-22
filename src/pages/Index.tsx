@@ -368,13 +368,13 @@ const Index = () => {
           </div>
           
           {isConnected && isStaked && (
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
               {selectedCandidates.size > 0 && (
                 <Button 
                   onClick={handleSubmitVotes}
                   disabled={votingCandidates.size > 0 || !isVotingPeriodOpen}
                   size="lg"
-                  className="bg-voi-gradient hover:opacity-90 px-8"
+                  className="bg-voi-gradient hover:opacity-90 px-10 py-4 text-lg font-semibold"
                 >
                   {votingCandidates.size > 0 ? 'Processing...' : 
                    votedCandidates.size > 0 ? `Update ${selectedCandidates.size} Vote${selectedCandidates.size === 1 ? '' : 's'}` :
@@ -382,11 +382,11 @@ const Index = () => {
                 </Button>
               )}
               {votedCandidates.size > 0 && selectedCandidates.size === 0 && isVotingPeriodOpen && (
-                <div className="text-sm text-blue-600 dark:text-blue-400">
+                <div className="text-base text-blue-600 dark:text-blue-400 font-medium">
                   Select candidates to change your votes
                 </div>
               )}
-              <div className="text-sm text-muted-foreground">
+              <div className="text-base text-muted-foreground font-medium">
                 Selected: {selectedCandidates.size}/{MAX_VOTES} • Voted: {votedCandidates.size}/{MAX_VOTES}
                 {!isVotingPeriodOpen && (
                   <span className="text-red-500 ml-2">• Voting Closed</span>
