@@ -299,7 +299,7 @@ const CombinedStakingCard = ({
 
                 {!acceptedTerms && voiBalance >= requiredStake && (
                   <p className="text-xs text-muted-foreground text-center">
-                    Please accept the terms to continue
+                    50,000 VOI will be locked until October 15, 2025
                   </p>
                 )}
               </div>
