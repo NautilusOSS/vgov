@@ -3,6 +3,8 @@ import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import ElectionStats from '@/components/ElectionStats';
 import CandidateCard from '@/components/CandidateCard';
+import StakingStatus from '@/components/StakingStatus';
+import StakingCard from '@/components/StakingCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -99,6 +101,14 @@ const Index = () => {
   const [walletAddress] = useState('0x742d35cc6bf5b46c1d...89a2');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCandidates, setSelectedCandidates] = useState<Set<string>>(new Set());
+  
+  // Staking state
+  const [voiBalance] = useState(75000); // Mock balance - user has enough
+  const [stakedAmount, setStakedAmount] = useState(0);
+  const [isStaked, setIsStaked] = useState(false);
+  const [isStaking, setIsStaking] = useState(false);
+  const lockEndDate = new Date('2024-10-15T23:59:59');
+  
   const { toast } = useToast();
 
   const handleConnectWallet = () => {
@@ -112,9 +122,27 @@ const Index = () => {
   const handleDisconnect = () => {
     setIsConnected(false);
     setSelectedCandidates(new Set());
+    setIsStaked(false);
+    setStakedAmount(0);
     toast({
       title: "Wallet Disconnected",
       description: "Your wallet has been disconnected",
+    });
+  };
+
+  const handleStake = async () => {
+    setIsStaking(true);
+    
+    // Simulate staking transaction
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    setStakedAmount(50000);
+    setIsStaked(true);
+    setIsStaking(false);
+    
+    toast({
+      title: "Staking Successful!",
+      description: "50,000 VOI has been staked. You can now vote for candidates.",
     });
   };
 
@@ -123,6 +151,15 @@ const Index = () => {
       toast({
         title: "Connect Wallet",
         description: "Please connect your wallet to vote",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!isStaked) {
+      toast({
+        title: "Staking Required",
+        description: "Please stake 50,000 VOI to participate in voting",
         variant: "destructive"
       });
       return;
@@ -174,6 +211,8 @@ const Index = () => {
       <Header
         isConnected={isConnected}
         walletAddress={walletAddress}
+        isStaked={isStaked}
+        stakedAmount={stakedAmount}
         onConnectWallet={handleConnectWallet}
         onDisconnect={handleDisconnect}
       />
@@ -202,6 +241,26 @@ const Index = () => {
         {/* Stats */}
         <ElectionStats {...stats} />
 
+        {/* Staking Section */}
+        {isConnected && (
+          <div className="grid gap-6 md:grid-cols-2">
+            <StakingStatus
+              voiBalance={voiBalance}
+              stakedAmount={stakedAmount}
+              isStaked={isStaked}
+              lockEndDate={lockEndDate}
+            />
+            {!isStaked && (
+              <StakingCard
+                voiBalance={voiBalance}
+                isStaked={isStaked}
+                isStaking={isStaking}
+                onStake={handleStake}
+              />
+            )}
+          </div>
+        )}
+
         {/* Search and Filters */}
         <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
           <div className="flex flex-1 items-center space-x-2">
@@ -219,7 +278,7 @@ const Index = () => {
             </Button>
           </div>
           
-          {isConnected && selectedCandidates.size > 0 && (
+          {isConnected && isStaked && selectedCandidates.size > 0 && (
             <Button className="bg-voi-gradient hover:opacity-90">
               Submit Votes ({selectedCandidates.size}/{MAX_VOTES})
             </Button>
@@ -251,7 +310,7 @@ const Index = () => {
                   totalVotes={totalVotes}
                   isSelected={selectedCandidates.has(candidate.id)}
                   onVote={handleCandidateVote}
-                  canVote={selectedCandidates.has(candidate.id) || selectedCandidates.size < MAX_VOTES}
+                  canVote={isStaked && (selectedCandidates.has(candidate.id) || selectedCandidates.size < MAX_VOTES)}
                 />
               ))}
             </div>

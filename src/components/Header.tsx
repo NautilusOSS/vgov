@@ -1,11 +1,13 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import VoiLogo from './VoiLogo';
-import { Wallet, User, Settings } from 'lucide-react';
+import { Wallet, User, Settings, Lock } from 'lucide-react';
 
 interface HeaderProps {
   isConnected?: boolean;
   walletAddress?: string;
+  isStaked?: boolean;
+  stakedAmount?: number;
   onConnectWallet?: () => void;
   onDisconnect?: () => void;
 }
@@ -13,6 +15,8 @@ interface HeaderProps {
 const Header = ({
   isConnected = false,
   walletAddress,
+  isStaked = false,
+  stakedAmount = 0,
   onConnectWallet,
   onDisconnect
 }: HeaderProps) => {
@@ -39,11 +43,19 @@ const Header = ({
 
           {/* Navigation and Wallet */}
           <div className="flex items-center space-x-4">
-            {/* Council Member Badge */}
-            {isConnected && (
-              <Badge variant="secondary" className="hidden sm:flex items-center gap-2">
+            {/* Staking Status Badge */}
+            {isConnected && isStaked && (
+              <Badge variant="secondary" className="hidden sm:flex items-center gap-2 bg-green-500/10 text-green-700 border-green-500/20">
+                <Lock size={14} />
+                {stakedAmount.toLocaleString()} VOI Staked
+              </Badge>
+            )}
+            
+            {/* Voting Eligible Badge */}
+            {isConnected && isStaked && (
+              <Badge variant="secondary" className="hidden lg:flex items-center gap-2">
                 <User size={14} />
-                Council Member
+                Voting Eligible
               </Badge>
             )}
 
