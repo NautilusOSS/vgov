@@ -347,7 +347,8 @@ const Index = () => {
                 <Button 
                   onClick={handleSubmitVotes}
                   disabled={votingCandidates.size > 0}
-                  className="bg-voi-gradient hover:opacity-90"
+                  size="lg"
+                  className="bg-voi-gradient hover:opacity-90 px-8"
                 >
                   {votingCandidates.size > 0 ? 'Submitting Votes...' : `Submit ${selectedCandidates.size} Vote${selectedCandidates.size === 1 ? '' : 's'}`}
                 </Button>
