@@ -218,19 +218,6 @@ const CombinedStakingCard = ({
               )}
             </div>
 
-          {/* Middle Column - Time Remaining */}
-            {isStaked && (
-              <div className="p-4 rounded-lg border border-border/50 bg-background/50">
-                <div className="flex items-center gap-2 mb-2">
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                  <span className="font-medium text-sm">Time Remaining</span>
-                </div>
-                <p className="text-lg font-bold text-foreground">{timeRemaining}</p>
-                <p className="text-xs text-muted-foreground mt-1">
-                  Until automatic unlock
-                </p>
-              </div>
-            )}
           </div>
 
           {/* Right Column - Action Section */}
@@ -238,12 +225,15 @@ const CombinedStakingCard = ({
             {isStaked ? (
               /* Unstaking Section */
               <div className="space-y-4">
-                <div className="p-4 rounded-lg border border-green-500/20 bg-green-500/5">
-                  <div className="text-center space-y-2">
-                    <CheckCircle2 className="h-8 w-8 text-green-500 mx-auto" />
-                    <p className="font-semibold text-green-700">Staking Complete</p>
-                    <p className="text-sm text-muted-foreground">You can now participate in voting</p>
+                <div className="p-4 rounded-lg border border-border/50 bg-background/50">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium text-sm">Time Remaining</span>
                   </div>
+                  <p className="text-lg font-bold text-foreground">{timeRemaining}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Until automatic unlock
+                  </p>
                 </div>
 
                 <div className="space-y-3">
