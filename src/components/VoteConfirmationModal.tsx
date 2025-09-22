@@ -13,11 +13,7 @@ import { CheckCircle, User, ExternalLink } from 'lucide-react';
 interface VoteConfirmationModalProps {
   isOpen: boolean;
   onClose: () => void;
-  candidate: {
-    id: string;
-    name: string;
-    description: string;
-  };
+  candidate: any; // Can be single candidate object or array of candidate IDs
   transactionHash: string;
   onVoteMore: () => void;
 }
@@ -29,6 +25,8 @@ const VoteConfirmationModal = ({
   transactionHash,
   onVoteMore
 }: VoteConfirmationModalProps) => {
+  const isMultipleVotes = Array.isArray(candidate);
+  const voteCount = isMultipleVotes ? candidate.length : 1;
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md">
@@ -38,29 +36,41 @@ const VoteConfirmationModal = ({
           </div>
           
           <DialogTitle className="text-xl font-semibold">
-            Vote Cast Successfully!
+            {isMultipleVotes ? `${voteCount} Votes` : 'Vote'} Cast Successfully!
           </DialogTitle>
           
           <DialogDescription className="text-center">
-            Your vote has been recorded on the blockchain
+            {isMultipleVotes 
+              ? `Your ${voteCount} votes have been recorded on the blockchain`
+              : 'Your vote has been recorded on the blockchain'
+            }
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           {/* Candidate Info */}
-          <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-            <Avatar className="h-12 w-12 bg-primary/10 border-2 border-primary/20">
-              <AvatarFallback className="bg-primary/10 text-primary">
-                <User size={20} />
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-              <p className="font-medium">{candidate.name}</p>
+          {!isMultipleVotes ? (
+            <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+              <Avatar className="h-12 w-12 bg-primary/10 border-2 border-primary/20">
+                <AvatarFallback className="bg-primary/10 text-primary">
+                  <User size={20} />
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1">
+                <p className="font-medium">{candidate.name}</p>
+                <Badge variant="secondary" className="mt-1 text-xs">
+                  ✓ Voted
+                </Badge>
+              </div>
+            </div>
+          ) : (
+            <div className="p-3 bg-muted/50 rounded-lg text-center">
+              <p className="font-medium">Successfully voted for {voteCount} candidates</p>
               <Badge variant="secondary" className="mt-1 text-xs">
-                ✓ Voted
+                ✓ All Votes Cast
               </Badge>
             </div>
-          </div>
+          )}
 
           {/* Transaction Details */}
           <div className="space-y-2 p-3 bg-muted/30 rounded-lg">
@@ -86,7 +96,7 @@ const VoteConfirmationModal = ({
             Close
           </Button>
           <Button onClick={onVoteMore} className="flex-1 bg-voi-gradient hover:opacity-90">
-            Vote for More
+            {isMultipleVotes ? 'Select More' : 'Vote for More'}
           </Button>
         </div>
       </DialogContent>

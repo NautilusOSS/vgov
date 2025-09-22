@@ -12,10 +12,11 @@ interface CandidateCardProps {
   description: string;
   votes: number;
   totalVotes: number;
+  isSelected?: boolean;
   isVoted?: boolean;
   isVoting?: boolean;
-  onVote?: (candidateId: string) => void;
-  canVote?: boolean;
+  onSelect?: (candidateId: string) => void;
+  canSelect?: boolean;
   twitterUrl?: string;
   discordUrl?: string;
 }
@@ -26,10 +27,11 @@ const CandidateCard = ({
   description,
   votes,
   totalVotes,
+  isSelected = false,
   isVoted = false,
   isVoting = false,
-  onVote,
-  canVote = true,
+  onSelect,
+  canSelect = true,
   twitterUrl,
   discordUrl
 }: CandidateCardProps) => {
@@ -38,6 +40,7 @@ const CandidateCard = ({
   return (
     <Card className={cn(
       "transition-all duration-300 hover:shadow-voi border-border/50",
+      isSelected && !isVoted && "ring-2 ring-primary bg-primary/5",
       isVoted && "ring-2 ring-green-500 bg-green-500/5",
       isVoting && "ring-2 ring-blue-500 bg-blue-500/5"
     )}>
@@ -90,6 +93,11 @@ const CandidateCard = ({
               Voting...
             </Badge>
           )}
+          {isSelected && !isVoted && !isVoting && (
+            <Badge className="bg-primary text-primary-foreground">
+              ✓ Selected
+            </Badge>
+          )}
         </div>
         
         <div className="space-y-2">
@@ -112,18 +120,19 @@ const CandidateCard = ({
           <Progress value={votePercentage} className="h-2" />
         </div>
 
-        {/* Vote Button */}
+        {/* Select Button */}
         <Button
-          onClick={() => onVote?.(id)}
-          disabled={!canVote || isVoting || isVoted}
-          variant={isVoted ? "default" : "outline"}
+          onClick={() => onSelect?.(id)}
+          disabled={!canSelect || isVoting || isVoted}
+          variant={isSelected && !isVoted ? "default" : isVoted ? "default" : "outline"}
           className={cn(
             "w-full",
+            isSelected && !isVoted && "bg-primary hover:bg-primary/90",
             isVoted && "bg-green-500 hover:bg-green-500/90",
             isVoting && "bg-blue-500 hover:bg-blue-500/90"
           )}
         >
-          {isVoting ? 'Signing Transaction...' : isVoted ? '✓ Vote Cast' : 'Vote for Candidate'}
+          {isVoting ? 'Processing Vote...' : isVoted ? '✓ Vote Cast' : isSelected ? '✓ Selected' : 'Select Candidate'}
         </Button>
       </CardContent>
     </Card>

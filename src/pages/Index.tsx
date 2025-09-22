@@ -176,7 +176,7 @@ const Index = () => {
     });
   };
 
-  const handleCandidateVote = async (candidateId: string) => {
+  const handleCandidateSelect = (candidateId: string) => {
     if (!isConnected) {
       toast({
         title: "Connect Wallet",
@@ -195,58 +195,57 @@ const Index = () => {
       return;
     }
 
-    // Check if already voted for this candidate
-    if (votedCandidates.has(candidateId)) {
+    // Toggle selection
+    setSelectedCandidates(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(candidateId)) {
+        newSet.delete(candidateId);
+      } else {
+        if (newSet.size >= MAX_VOTES) {
+          toast({
+            title: "Maximum Selections Reached",
+            description: `You can only select ${MAX_VOTES} candidates.`,
+            variant: "destructive"
+          });
+          return prev;
+        }
+        newSet.add(candidateId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleSubmitVotes = async () => {
+    if (selectedCandidates.size === 0) {
       toast({
-        title: "Already Voted",
-        description: "You have already voted for this candidate",
+        title: "No Candidates Selected",
+        description: "Please select at least one candidate to vote for.",
         variant: "destructive"
       });
       return;
     }
 
-    // Check vote limit
-    if (votedCandidates.size >= MAX_VOTES) {
-      toast({
-        title: "Maximum Votes Reached",
-        description: `You can only vote for ${MAX_VOTES} candidates.`,
-        variant: "destructive"
-      });
-      return;
-    }
-
-    // Start voting transaction
-    setVotingCandidates(prev => new Set([...prev, candidateId]));
+    setVotingCandidates(new Set(selectedCandidates));
     
     try {
-      // Simulate transaction signing and processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Simulate voting for all selected candidates
+      await new Promise(resolve => setTimeout(resolve, 3000));
       
       // Generate mock transaction hash
       const transactionHash = `0x${Math.random().toString(16).substr(2, 64)}`;
       
       // Update voted candidates
-      setVotedCandidates(prev => new Set([...prev, candidateId]));
-      setVotingCandidates(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(candidateId);
-        return newSet;
-      });
+      setVotedCandidates(new Set(selectedCandidates));
+      setVotingCandidates(new Set());
+      setSelectedCandidates(new Set());
       
-      // Find candidate for modal
-      const candidate = mockCandidates.find(c => c.id === candidateId);
-      if (candidate) {
-        setLastVotedCandidate(candidate);
-        setLastTransactionHash(transactionHash);
-        setShowConfirmationModal(true);
-      }
+      // Show confirmation modal
+      setLastVotedCandidate(Array.from(selectedCandidates));
+      setLastTransactionHash(transactionHash);
+      setShowConfirmationModal(true);
       
     } catch (error) {
-      setVotingCandidates(prev => {
-        const newSet = new Set(prev);
-        newSet.delete(candidateId);
-        return newSet;
-      });
+      setVotingCandidates(new Set());
       
       toast({
         title: "Vote Failed",
@@ -342,9 +341,20 @@ const Index = () => {
             </Button>
           </div>
           
-          {isConnected && isStaked && votedCandidates.size > 0 && (
-            <div className="text-sm text-muted-foreground">
-              Votes Cast: {votedCandidates.size}/{MAX_VOTES}
+          {isConnected && isStaked && (
+            <div className="flex items-center gap-4">
+              {selectedCandidates.size > 0 && (
+                <Button 
+                  onClick={handleSubmitVotes}
+                  disabled={votingCandidates.size > 0}
+                  className="bg-voi-gradient hover:opacity-90"
+                >
+                  {votingCandidates.size > 0 ? 'Submitting Votes...' : `Submit ${selectedCandidates.size} Vote${selectedCandidates.size === 1 ? '' : 's'}`}
+                </Button>
+              )}
+              <div className="text-sm text-muted-foreground">
+                Selected: {selectedCandidates.size}/{MAX_VOTES} • Voted: {votedCandidates.size}/{MAX_VOTES}
+              </div>
             </div>
           )}
         </div>
@@ -372,10 +382,11 @@ const Index = () => {
                   key={candidate.id}
                   {...candidate}
                   totalVotes={totalVotes}
+                  isSelected={selectedCandidates.has(candidate.id)}
                   isVoted={votedCandidates.has(candidate.id)}
                   isVoting={votingCandidates.has(candidate.id)}
-                  onVote={handleCandidateVote}
-                  canVote={isStaked && !votedCandidates.has(candidate.id) && votedCandidates.size < MAX_VOTES}
+                  onSelect={handleCandidateSelect}
+                  canSelect={isStaked && !votedCandidates.has(candidate.id)}
                 />
               ))}
             </div>
