@@ -105,7 +105,7 @@ const CandidateCard = ({
         </div>
         
         <div className="space-y-2">
-          <p className="text-sm font-semibold text-foreground">Candidate Profile:</p>
+          <p className="text-sm font-semibold text-foreground">Candidate Bio:</p>
           <CardDescription className="text-sm leading-relaxed">
             {description}
           </CardDescription>
