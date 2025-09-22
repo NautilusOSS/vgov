@@ -13,83 +13,75 @@ import { Search, Filter } from 'lucide-react';
 const mockCandidates = [
   {
     id: '1',
-    name: 'Sarah Chen',
-    description: 'Former core developer at major DeFi protocols with 8+ years experience in blockchain technology. Focused on technical excellence and community-driven development.',
+    name: '@Dotkoms',
+    description: 'Experienced blockchain developer and community leader focused on decentralized governance and protocol development.',
     votes: 234,
-    twitterUrl: 'https://twitter.com/sarahchen_dev',
-    discordUrl: 'https://discord.gg/sarahchen'
+    twitterUrl: 'https://twitter.com/Dotkoms',
+    discordUrl: 'https://discord.gg/dotkoms'
   },
   {
     id: '2',
-    name: 'Marcus Rodriguez',
-    description: 'Leading security expert specializing in smart contract auditing and protocol security. Has secured over $2B in DeFi protocols.',
+    name: '@CP85',
+    description: 'Security-focused developer with expertise in smart contract auditing and blockchain infrastructure.',
     votes: 198,
-    twitterUrl: 'https://twitter.com/marcus_security',
-    discordUrl: 'https://discord.gg/marcusrodriguez'
+    twitterUrl: 'https://twitter.com/CP85',
+    discordUrl: 'https://discord.gg/cp85'
   },
   {
     id: '3',
-    name: 'Aisha Patel',
-    description: 'Passionate about blockchain education and community building. Has grown multiple Web3 communities from zero to thousands of active members.',
+    name: '@jzyeyo',
+    description: 'Community builder and DeFi enthusiast passionate about growing the Voi Network ecosystem.',
     votes: 167,
-    twitterUrl: 'https://twitter.com/aisha_web3',
-    discordUrl: 'https://discord.gg/aishapatel'
+    twitterUrl: 'https://twitter.com/jzyeyo',
+    discordUrl: 'https://discord.gg/jzyeyo'
   },
   {
     id: '4',
-    name: 'David Kim',
-    description: 'PhD in Economics with focus on cryptocurrency markets and tokenomics design. Previously advised multiple successful DeFi protocols.',
+    name: '@0xchickenjockey',
+    description: 'Full-stack developer with deep knowledge of blockchain protocols and tokenomics design.',
     votes: 189,
-    twitterUrl: 'https://twitter.com/david_tokenomics',
-    discordUrl: 'https://discord.gg/davidkim'
+    twitterUrl: 'https://twitter.com/0xchickenjockey',
+    discordUrl: 'https://discord.gg/0xchickenjockey'
   },
   {
     id: '5',
-    name: 'Elena Kowalski',
-    description: 'Blockchain lawyer specializing in DeFi regulations and compliance. Helps navigate the evolving regulatory landscape.',
+    name: '@thorpesclothing',
+    description: 'Business development expert with experience in partnerships and ecosystem growth strategies.',
     votes: 145,
-    twitterUrl: 'https://twitter.com/elena_defilaw',
-    discordUrl: 'https://discord.gg/elenakowalski'
+    twitterUrl: 'https://twitter.com/thorpesclothing',
+    discordUrl: 'https://discord.gg/thorpesclothing'
   },
   {
     id: '6',
-    name: 'James Thompson',
-    description: 'Expert in blockchain infrastructure and node operations. Built scalable systems for major Layer 1 and Layer 2 protocols.',
+    name: '@haroof',
+    description: 'Infrastructure specialist focused on node operations and network scalability solutions.',
     votes: 156,
-    twitterUrl: 'https://twitter.com/james_infra',
-    discordUrl: 'https://discord.gg/jamesthompson'
+    twitterUrl: 'https://twitter.com/haroof',
+    discordUrl: 'https://discord.gg/haroof'
   },
   {
     id: '7',
-    name: 'Maria Santos',
-    description: 'Product leader focused on user experience in DeFi. Led product development for consumer-facing blockchain applications.',
+    name: '@.oh.hi.mark.',
+    description: 'Product leader with extensive experience in user experience design for blockchain applications.',
     votes: 134,
-    twitterUrl: 'https://twitter.com/maria_ux',
-    discordUrl: 'https://discord.gg/mariasantos'
+    twitterUrl: 'https://twitter.com/.oh.hi.mark.',
+    discordUrl: 'https://discord.gg/ohhimark'
   },
   {
     id: '8',
-    name: 'Ahmed Hassan',
-    description: 'Blockchain researcher working on consensus mechanisms and scalability solutions. Published numerous papers on distributed systems.',
+    name: '@Boganmeister',
+    description: 'Blockchain researcher specializing in consensus mechanisms and distributed systems architecture.',
     votes: 178,
-    twitterUrl: 'https://twitter.com/ahmed_research',
-    discordUrl: 'https://discord.gg/ahmedhassan'
+    twitterUrl: 'https://twitter.com/Boganmeister',
+    discordUrl: 'https://discord.gg/boganmeister'
   },
   {
     id: '9',
-    name: 'Lisa Wang',
-    description: 'Business development expert with track record of growing blockchain startups. Specialized in partnerships and ecosystem development.',
+    name: '@Pettytunah',
+    description: 'DeFi expert with background in traditional finance and risk management for decentralized protocols.',
     votes: 123,
-    twitterUrl: 'https://twitter.com/lisa_bizdev',
-    discordUrl: 'https://discord.gg/lisawang'
-  },
-  {
-    id: '10',
-    name: 'Robert Johnson',
-    description: 'Former traditional finance executive turned DeFi expert. Specialized in treasury management and risk assessment for DAOs.',
-    votes: 142,
-    twitterUrl: 'https://twitter.com/robert_defi',
-    discordUrl: 'https://discord.gg/robertjohnson'
+    twitterUrl: 'https://twitter.com/Pettytunah',
+    discordUrl: 'https://discord.gg/pettytunah'
   }
 ];
 
