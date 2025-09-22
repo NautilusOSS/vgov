@@ -266,7 +266,8 @@ const CombinedStakingCard = ({
                 </Button>
 
                 <p className="text-xs text-muted-foreground text-center">
-                  50,000 VOI will be locked until October 15, 2025
+                  50,000 VOI will be locked until October 15, 2025<br />
+                  Withdrawals will not be counted towards Vote
                 </p>
               </div>
             )}
