@@ -106,14 +106,14 @@ const CombinedStakingCard = ({
         <div className="grid lg:grid-cols-3 gap-4">
           {/* Left Column - Required Stake */}
           <div className="space-y-4">
-            <div className="p-4 rounded-lg border border-primary/20 bg-primary/5">
+            <div className="p-4 rounded-lg border border-primary/20 bg-primary/5 flex flex-col h-full">
               <div className="flex items-center gap-2 mb-3">
                 <Lock className="h-4 w-4 text-primary" />
                 <span className="font-semibold text-primary">Required Stake</span>
               </div>
               <p className="text-3xl font-bold text-primary mb-4">50,000 <span className="text-lg">VOI</span></p>
               
-              <div className="space-y-2 text-sm text-muted-foreground">
+              <div className="space-y-2 text-sm text-muted-foreground mt-auto">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-3 w-3" />
                   <span>Lock Period: Oct 1-15, 2024</span>
@@ -128,7 +128,7 @@ const CombinedStakingCard = ({
 
           {/* Middle Column - Balance Info */}
           <div className="space-y-4">
-            <div className="p-4 rounded-lg border border-primary/20 bg-primary/5">
+            <div className="p-4 rounded-lg border border-primary/20 bg-primary/5 flex flex-col h-full">
               <div className="flex items-center gap-2 mb-3">
                 <Coins className="h-4 w-4 text-primary" />
                 <span className="font-semibold text-primary">Staked Amount</span>
@@ -139,17 +139,21 @@ const CombinedStakingCard = ({
                 <Clock className="h-3 w-3 text-muted-foreground" />
                 <span className="text-sm font-medium">Votes Remaining</span>
               </div>
-              <p className="text-lg font-bold">{isStaked ? votesRemaining : 0} <span className="text-sm font-normal text-muted-foreground">/ 5 candidates</span></p>
+              <p className="text-lg font-bold mb-4">{isStaked ? votesRemaining : 0} <span className="text-sm font-normal text-muted-foreground">/ 5 candidates</span></p>
               
-              {stakedAmount > 0 && (
-                <div className="space-y-2 text-sm text-muted-foreground mt-4">
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>Progress</span>
-                    <span>{stakingProgress.toFixed(0)}%</span>
-                  </div>
-                  <Progress value={stakingProgress} className="h-1.5" />
-                </div>
-              )}
+              <div className="space-y-2 text-sm text-muted-foreground mt-auto">
+                {stakedAmount > 0 ? (
+                  <>
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                      <span>Progress</span>
+                      <span>{stakingProgress.toFixed(0)}%</span>
+                    </div>
+                    <Progress value={stakingProgress} className="h-1.5" />
+                  </>
+                ) : (
+                  <div className="h-6"></div>
+                )}
+              </div>
             </div>
 
           {/* Middle Column - Time Remaining */}
