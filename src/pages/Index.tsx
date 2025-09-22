@@ -279,6 +279,7 @@ const Index = () => {
             isStaking={isStaking}
             isUnstaking={isUnstaking}
             lockEndDate={lockEndDate}
+            votesRemaining={stats.votesRemaining}
             onStake={handleStake}
             onUnstake={handleUnstake}
           />
