@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import VoiLogo from './VoiLogo';
-import { Wallet, User, Settings, Lock } from 'lucide-react';
+import { Wallet, User, Settings, Lock, Twitter, MessageCircle, Github, ExternalLink } from 'lucide-react';
 
 interface HeaderProps {
   isConnected?: boolean;
@@ -43,6 +43,37 @@ const Header = ({
 
           {/* Navigation and Wallet */}
           <div className="flex items-center space-x-4">
+            {/* Social Media Links */}
+            <div className="hidden md:flex items-center space-x-2">
+              <a
+                href="https://twitter.com/voi_network"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-accent rounded-md"
+                aria-label="Voi Network Twitter"
+              >
+                <Twitter size={18} />
+              </a>
+              <a
+                href="https://discord.gg/voi-network"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-accent rounded-md"
+                aria-label="Voi Network Discord"
+              >
+                <MessageCircle size={18} />
+              </a>
+              <a
+                href="https://github.com/voi-network"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-accent rounded-md"
+                aria-label="Voi Network GitHub"
+              >
+                <Github size={18} />
+              </a>
+            </div>
+            
             {/* Staking Status Badge */}
             {isConnected && isStaked && (
               <Badge variant="secondary" className="hidden sm:flex items-center gap-2 bg-green-500/10 text-green-700 border-green-500/20">

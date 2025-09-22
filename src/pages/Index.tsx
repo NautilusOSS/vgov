@@ -8,7 +8,7 @@ import VoteConfirmationModal from '@/components/VoteConfirmationModal';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Filter } from 'lucide-react';
+import { Search, Filter, Twitter, MessageCircle, Github, ExternalLink } from 'lucide-react';
 
 // Mock candidates - in real app this would come from your backend
 const mockCandidates = [
@@ -433,9 +433,47 @@ const Index = () => {
 
         {/* Footer */}
         <footer className="text-center pt-12 pb-6 border-t border-border/50">
-          <p className="text-sm text-muted-foreground">
-            Powered by Voi Network • Council Elections Platform
-          </p>
+          <div className="flex flex-col items-center space-y-4">
+            {/* Social Media Links */}
+            <div className="flex items-center space-x-6">
+              <a
+                href="https://twitter.com/voi_network"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Follow Voi Network on Twitter"
+              >
+                <Twitter size={20} />
+                <span className="hidden sm:inline">Twitter</span>
+                <ExternalLink size={14} />
+              </a>
+              <a
+                href="https://discord.gg/voi-network"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Join Voi Network Discord"
+              >
+                <MessageCircle size={20} />
+                <span className="hidden sm:inline">Discord</span>
+                <ExternalLink size={14} />
+              </a>
+              <a
+                href="https://github.com/voi-network"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                aria-label="Voi Network GitHub"
+              >
+                <Github size={20} />
+                <span className="hidden sm:inline">GitHub</span>
+                <ExternalLink size={14} />
+              </a>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              Powered by Voi Network • Council Elections Platform
+            </p>
+          </div>
         </footer>
       </main>
 
