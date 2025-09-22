@@ -2,7 +2,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Users, Twitter, MessageCircle, ExternalLink } from 'lucide-react';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Users, Twitter, MessageCircle, ExternalLink, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface CandidateCardProps {
@@ -39,31 +40,41 @@ const CandidateCard = ({
     )}>
       <CardHeader className="space-y-3">
         <div className="flex items-start justify-between">
-          <div className="space-y-2 flex-1">
-            <CardTitle className="text-xl font-semibold">{name}</CardTitle>
-            <div className="flex items-center gap-3">
-              {twitterUrl && (
-                <a
-                  href={twitterUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <Twitter size={16} />
-                  <ExternalLink size={12} />
-                </a>
-              )}
-              {discordUrl && (
-                <a
-                  href={discordUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <MessageCircle size={16} />
-                  <ExternalLink size={12} />
-                </a>
-              )}
+          <div className="flex items-start gap-4 flex-1">
+            {/* Profile Picture Placeholder */}
+            <Avatar className="h-16 w-16 bg-primary/10 border-2 border-primary/20">
+              <AvatarFallback className="bg-primary/10 text-primary">
+                <User size={24} />
+              </AvatarFallback>
+            </Avatar>
+            
+            {/* Name and Social Links */}
+            <div className="space-y-2 flex-1">
+              <CardTitle className="text-xl font-semibold">{name}</CardTitle>
+              <div className="flex items-center gap-3">
+                {twitterUrl && (
+                  <a
+                    href={twitterUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Twitter size={16} />
+                    <ExternalLink size={12} />
+                  </a>
+                )}
+                {discordUrl && (
+                  <a
+                    href={discordUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <MessageCircle size={16} />
+                    <ExternalLink size={12} />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
           {isSelected && (
