@@ -3,8 +3,7 @@ import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
 import ElectionStats from '@/components/ElectionStats';
 import CandidateCard from '@/components/CandidateCard';
-import StakingStatus from '@/components/StakingStatus';
-import StakingCard from '@/components/StakingCard';
+import CombinedStakingCard from '@/components/CombinedStakingCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -273,23 +272,16 @@ const Index = () => {
 
         {/* Staking Section */}
         {isConnected && (
-          <div className="grid gap-6 md:grid-cols-2">
-            <StakingStatus
-              voiBalance={voiBalance}
-              stakedAmount={stakedAmount}
-              isStaked={isStaked}
-              lockEndDate={lockEndDate}
-            />
-            <StakingCard
-              voiBalance={voiBalance}
-              isStaked={isStaked}
-              isStaking={isStaking}
-              isUnstaking={isUnstaking}
-              lockEndDate={lockEndDate}
-              onStake={handleStake}
-              onUnstake={handleUnstake}
-            />
-          </div>
+          <CombinedStakingCard
+            voiBalance={voiBalance}
+            stakedAmount={stakedAmount}
+            isStaked={isStaked}
+            isStaking={isStaking}
+            isUnstaking={isUnstaking}
+            lockEndDate={lockEndDate}
+            onStake={handleStake}
+            onUnstake={handleUnstake}
+          />
         )}
 
         {/* Search and Filters */}
