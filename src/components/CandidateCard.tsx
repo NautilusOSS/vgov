@@ -44,6 +44,7 @@ interface CandidateCardProps {
   id: string;
   name: string;
   description: string;
+  tagline?: string;
   votes: number;
   totalVotes: number;
   isSelected?: boolean;
@@ -62,6 +63,7 @@ const CandidateCard = ({
   id,
   name,
   description,
+  tagline,
   votes,
   totalVotes,
   isSelected = false,
@@ -150,6 +152,13 @@ const CandidateCard = ({
             {/* Name and Social Links */}
             <div className="space-y-2 flex-1">
               <CardTitle className="text-xl font-semibold">{name}</CardTitle>
+              {profile?.metadata?.description && (
+                <p className="text-sm text-muted-foreground italic leading-relaxed">
+                  {profile.metadata?.description?.length || 0 > 120
+                    ? `${profile.metadata.description.substring(0, 120)}`
+                    : profile.metadata.description}
+                </p>
+              )}
               {profile?.metadata?.location && (
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                   <MapPin size={14} />

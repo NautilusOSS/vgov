@@ -131,6 +131,7 @@ export const decodeElectionProposal = (
 // Types for election data
 interface ProfileMetadata {
   bio?: string;
+  tagline?: string;
   avatar?: string;
   banner?: string;
   location?: string;
@@ -152,6 +153,7 @@ interface Candidate {
   id: number;
   name: string;
   bio: string;
+  description: string;
   votes: number;
   avatar: string;
   endorsements: number;
@@ -547,6 +549,7 @@ const Index = () => {
           id: `proposal_${candidate.id}`,
           title: `Vote for ${candidate.name}`,
           description: candidate.bio,
+          tagline: candidate.description,
           status: "active",
           votes: {
             yes: candidate.votes,
@@ -1515,6 +1518,7 @@ const Index = () => {
                         id={candidate.id.toString()}
                         name={candidate.name}
                         description={candidate.bio}
+                        tagline={candidate.description}
                         votes={candidateVotes}
                         totalVotes={totalVotes}
                         isSelected={selectedCandidates.has(candidate.id)}
