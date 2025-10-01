@@ -1,0 +1,101 @@
+{
+  "elections": [
+    {
+      "id": 1,
+      "title": "VOI Council Election",
+      "description": "Elect 5 members to the VOI Council for 2025-2026 term",
+      "status": "Active",
+      "timeRemaining": "5d 12h 30m",
+      "positions": 5,
+      "chains": ["VOI"],
+      "proposalHash": "9ab26e522659b5a152bba29b3895a91ed5f02e4b9f403706f2b5219da8690453",
+      "electionNode": "election_node_001",
+      "createdAtTimestamp": 1704067200,
+      "electionStartTimestamp": 1704153600,
+      "electionEndTimestamp": 1704758400,
+      "candidates": [
+        {
+          "id": 0,
+          "name": "haroof.voi",
+          "bio": "Voi community member",
+          "votes": 0,
+          "avatar": "/api/placeholder/40/40",
+          "endorsements": 0,
+          "address": "ATLAS1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF",
+          "campaignStatement": "I'm committed to advancing VOI's technical infrastructure and ensuring network security remains our top priority."
+        },
+        {
+          "id": 1,
+          "name": "boganmeister.voi",
+          "bio": "Voi community member",
+          "votes": 0,
+          "avatar": "/api/placeholder/40/40",
+          "endorsements": 0,
+          "address": "ATLAS1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF",
+          "campaignStatement": "I'm committed to advancing VOI's technical infrastructure and ensuring network security remains our top priority."
+        },
+        {
+          "id": 2,
+          "name": "yeyo.voi",
+          "bio": "Voi community member",
+          "votes": 0,
+          "avatar": "/api/placeholder/40/40",
+          "endorsements": 0,
+          "address": "COSMOS1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF",
+          "campaignStatement": "My focus will be on expanding VOI's cross-chain capabilities and building bridges to other ecosystems."
+        },
+        {
+          "id": 3,
+          "name": "scotchka.voi",
+          "bio": "Voi community member",
+          "votes": 0,
+          "avatar": "/api/placeholder/40/40",
+          "endorsements": 0,
+          "address": "FOUNDER1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF",
+          "campaignStatement": "I bring deep protocol knowledge and a vision for decentralized governance that empowers the community."
+        },
+        {
+          "id": 4,
+          "name": "thorpe.voi",
+          "bio": "Active in the community been around since testnet very involved with vois members and a builder here in the ecosystem I think I would be a good asset to the council  I hope you all consider my application frens",
+          "votes": 0,
+          "avatar": "/api/placeholder/40/40",
+          "endorsements": 0,
+          "address": "TECH1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF",
+          "campaignStatement": "Active in the community been around since testnet very involved with vois members and a builder here in the ecosystem I think I would be a good asset to the council  I hope you all consider my application frens"
+        },
+        {
+          "id": 5,
+          "name": "nussmonster.voi",
+          "bio": "I believe in Voi Network. I have been working with the council since May 2025 doing administrative services. I have been running a node since testnet and I will put in 110% to succeed.",
+          "votes": 0,
+          "avatar": "/api/placeholder/40/40",
+          "endorsements": 0,
+          "address": "DAO1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF",
+          "campaignStatement": "I believe in Voi Network. I have been working with the council since May 2025 doing administrative services. I have been running a node since testnet and I will put in 110% to succeed."
+        },
+        {
+          "id": 6,
+          "name": "0xkoms.voi",
+          "bio": "Immersed in startup culture and understanding of the milestones of traditional startup I will emphasize professional request pitches and push for standards of minimum 500k ARR for projects trying to request money in the ecosystem.",
+          "votes": 0,
+          "avatar": "/api/placeholder/40/40",
+          "endorsements": 0,
+          "address": "DAO1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF",
+          "campaignStatement": "Immersed in startup culture and understanding of the milestones of traditional startup I will emphasize professional request pitches and push for standards of minimum 500k ARR for projects trying to request money in the ecosystem."
+        }
+      ],
+      "totalVotes": 0,
+      "quorumThreshold": 1000000,
+      "minVotingPower": 1000,
+      "votingPowerMultiplier": 1.5
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "lastUpdated": "2024-01-01T00:00:00Z",
+    "description": "VOI Foundation Election Configuration",
+    "network": "VOI",
+    "governanceContract": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+  }
+}

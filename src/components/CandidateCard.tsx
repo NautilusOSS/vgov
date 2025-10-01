@@ -1,10 +1,43 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Users, Twitter, MessageCircle, ExternalLink, User } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  Users,
+  Twitter,
+  MessageCircle,
+  ExternalLink,
+  User,
+  Github,
+  MapPin,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+
+interface ProfileMetadata {
+  bio?: string;
+  avatar?: string;
+  banner?: string;
+  location?: string;
+  background?: string;
+  twitter?: string;
+  github?: string;
+  url?: string;
+  "com.twitter"?: string;
+  "com.github"?: string;
+}
+
+interface ProfileData {
+  name: string;
+  address: string;
+  metadata: ProfileMetadata;
+  cached: boolean;
+}
 
 interface CandidateCardProps {
   id: string;
@@ -20,6 +53,8 @@ interface CandidateCardProps {
   twitterUrl?: string;
   discordUrl?: string;
   isVotingPeriodOpen?: boolean;
+  profile?: ProfileData;
+  showButtons?: boolean;
 }
 
 const CandidateCard = ({
@@ -35,40 +70,84 @@ const CandidateCard = ({
   canSelect = true,
   twitterUrl,
   discordUrl,
-  isVotingPeriodOpen = true
+  isVotingPeriodOpen = true,
+  profile,
+  showButtons = false,
 }: CandidateCardProps) => {
   const votePercentage = totalVotes > 0 ? (votes / totalVotes) * 100 : 0;
 
+  const handleCardClick = () => {
+    if (canSelect && !isVoting && !isVoted) {
+      onSelect?.(id);
+    }
+  };
+
   return (
-    <Card className={cn(
-      "transition-all duration-300 hover:shadow-voi border-border/50",
-      isSelected && !isVoted && "ring-2 ring-primary bg-primary/5",
-      isVoted && "ring-2 ring-green-500 bg-green-500/5",
-      isVoting && "ring-2 ring-blue-500 bg-blue-500/5"
-    )}>
+    <Card
+      className={cn(
+        "transition-all duration-300 hover:shadow-voi border-border/50",
+        isSelected && !isVoted && "ring-2 ring-primary bg-primary/5",
+        isVoted && "ring-2 ring-green-500 bg-green-500/5",
+        isVoting && "ring-2 ring-blue-500 bg-blue-500/5",
+        canSelect &&
+          !isVoting &&
+          !isVoted &&
+          "cursor-pointer hover:scale-[1.02] hover:shadow-lg",
+        (!canSelect || isVoting || isVoted) && "cursor-default"
+      )}
+      onClick={handleCardClick}
+    >
       <CardHeader className="space-y-3">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-4 flex-1">
-            {/* Profile Picture Placeholder */}
+            {/* Profile Picture */}
             <Avatar className="h-16 w-16 bg-primary/10 border-2 border-primary/20">
+              {profile?.metadata?.avatar ? (
+                <AvatarImage src={profile.metadata.avatar} alt={name} />
+              ) : null}
               <AvatarFallback className="bg-primary/10 text-primary">
                 <User size={24} />
               </AvatarFallback>
             </Avatar>
-            
+
             {/* Name and Social Links */}
             <div className="space-y-2 flex-1">
               <CardTitle className="text-xl font-semibold">{name}</CardTitle>
+              {profile?.metadata?.location && (
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <MapPin size={14} />
+                  {profile.metadata.location}
+                </div>
+              )}
               <div className="flex items-center gap-3">
-                {twitterUrl && (
+                {(profile?.metadata?.twitter ||
+                  profile?.metadata?.["com.twitter"] ||
+                  twitterUrl) && (
                   <a
-                    href={twitterUrl}
+                    href={`https://twitter.com/${
+                      profile?.metadata?.twitter ||
+                      profile?.metadata?.["com.twitter"] ||
+                      twitterUrl?.split("/").pop()
+                    }`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <Twitter size={16} />
-                    <ExternalLink size={12} />
+                  </a>
+                )}
+                {(profile?.metadata?.github ||
+                  profile?.metadata?.["com.github"]) && (
+                  <a
+                    href={`https://github.com/${
+                      profile?.metadata?.github ||
+                      profile?.metadata?.["com.github"]
+                    }`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Github size={16} />
                   </a>
                 )}
                 {discordUrl && (
@@ -79,23 +158,26 @@ const CandidateCard = ({
                     className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
                     <MessageCircle size={16} />
-                    <ExternalLink size={12} />
+                  </a>
+                )}
+                {profile?.metadata?.url && (
+                  <a
+                    href={profile.metadata.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <ExternalLink size={16} />
                   </a>
                 )}
               </div>
             </div>
           </div>
           {isVoted && (
-            <Badge className={cn(
-              isVotingPeriodOpen ? "bg-green-500 text-white" : "bg-gray-500 text-white"
-            )}>
-              ✓ Voted {!isVotingPeriodOpen && "• Locked"}
-            </Badge>
+            <Badge className="bg-green-500 text-white">✓ Vote Cast</Badge>
           )}
           {isVoting && (
-            <Badge className="bg-blue-500 text-white">
-              Voting...
-            </Badge>
+            <Badge className="bg-blue-500 text-white">Voting...</Badge>
           )}
           {isSelected && !isVoted && !isVoting && (
             <Badge className="bg-primary text-primary-foreground">
@@ -103,11 +185,11 @@ const CandidateCard = ({
             </Badge>
           )}
         </div>
-        
+
         <div className="space-y-2">
           <p className="text-sm font-semibold text-foreground">Bio:</p>
           <CardDescription className="text-sm leading-relaxed">
-            {description}
+            {profile?.metadata?.bio || description}
           </CardDescription>
         </div>
       </CardHeader>
@@ -124,24 +206,33 @@ const CandidateCard = ({
           <Progress value={votePercentage} className="h-2" />
         </div>
 
-        {/* Select Button */}
-        <Button
-          onClick={() => onSelect?.(id)}
-          disabled={!canSelect || isVoting || (isVoted && !isVotingPeriodOpen)}
-          variant={isSelected && !isVoted ? "default" : isVoted && !isVotingPeriodOpen ? "default" : isVoted ? "outline" : "outline"}
-          className={cn(
-            "w-full",
-            isSelected && !isVoted && "bg-primary hover:bg-primary/90",
-            isVoted && !isVotingPeriodOpen && "bg-gray-500 hover:bg-gray-500/90",
-            isVoted && isVotingPeriodOpen && "bg-green-500/20 border-green-500 text-green-700 dark:text-green-300 hover:bg-green-500/30",
-            isVoting && "bg-blue-500 hover:bg-blue-500/90"
-          )}
-        >
-          {isVoting ? 'Processing Vote...' : 
-           isVoted && !isVotingPeriodOpen ? '✓ Vote Locked' :
-           isVoted && isVotingPeriodOpen ? 'Change Vote' :
-           isSelected ? '✓ Selected' : 'Select Candidate'}
-        </Button>
+        {/* Selection Status */}
+        {showButtons && (
+          <div
+            className={cn(
+              "text-center py-2 px-4 rounded-lg font-medium text-sm transition-colors",
+              isVoting && "bg-blue-500/10 text-blue-600",
+              isVoted && "bg-green-500/10 text-green-600",
+              isSelected && !isVoted && "bg-primary/10 text-primary",
+              !isSelected &&
+                !isVoted &&
+                !isVoting &&
+                canSelect &&
+                "text-muted-foreground",
+              !canSelect && "text-muted-foreground/50"
+            )}
+          >
+            {isVoting
+              ? "Processing Vote..."
+              : isVoted
+              ? "✓ Vote Cast"
+              : isSelected
+              ? "✓ Selected"
+              : canSelect
+              ? "Click to select"
+              : "Cannot select"}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

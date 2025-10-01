@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import VoiLogo from './VoiLogo';
-import { Wallet, User, Settings, Lock } from 'lucide-react';
+import WalletConnectModal from './WalletConnectModal';
+import WalletConnectedDrawer from './WalletConnectedDrawer';
+import { Wallet, User, Lock } from 'lucide-react';
 
 interface HeaderProps {
   isConnected?: boolean;
@@ -20,8 +23,19 @@ const Header = ({
   onConnectWallet,
   onDisconnect
 }: HeaderProps) => {
+  const [showWalletModal, setShowWalletModal] = useState(false);
+  const [showConnectedDrawer, setShowConnectedDrawer] = useState(false);
+  
   const truncateAddress = (address: string) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
+
+  const handleConnectWallet = () => {
+    setShowWalletModal(true);
+  };
+
+  const handleConnectedWalletClick = () => {
+    setShowConnectedDrawer(true);
   };
 
   return (
@@ -61,27 +75,18 @@ const Header = ({
 
             {/* Wallet Connection */}
             {isConnected ? (
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="hidden sm:flex items-center gap-2"
-                >
-                  <Wallet size={16} />
-                  {walletAddress ? truncateAddress(walletAddress) : 'Connected'}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onDisconnect}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <Settings size={16} />
-                </Button>
-              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2"
+                onClick={handleConnectedWalletClick}
+              >
+                <Wallet size={16} />
+                {walletAddress ? truncateAddress(walletAddress) : 'Connected'}
+              </Button>
             ) : (
               <Button
-                onClick={onConnectWallet}
+                onClick={handleConnectWallet}
                 className="bg-voi-gradient hover:opacity-90 transition-opacity"
               >
                 <Wallet size={16} className="mr-2" />
@@ -91,6 +96,19 @@ const Header = ({
           </div>
         </div>
       </div>
+      
+      {/* Wallet Connect Modal */}
+      <WalletConnectModal 
+        isOpen={showWalletModal} 
+        onClose={() => setShowWalletModal(false)} 
+      />
+      
+      {/* Wallet Connected Drawer */}
+      <WalletConnectedDrawer 
+        isOpen={showConnectedDrawer} 
+        onClose={() => setShowConnectedDrawer(false)}
+        onDisconnect={onDisconnect || (() => {})}
+      />
     </header>
   );
 };
