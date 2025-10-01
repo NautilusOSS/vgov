@@ -16,6 +16,7 @@ import {
   User,
   Github,
   MapPin,
+  Globe,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -82,6 +83,42 @@ const CandidateCard = ({
     }
   };
 
+  console.log({ profile });
+
+  const getTwitterUrl = () => {
+    // Check profile metadata first
+
+    const mTwitterUrl =
+      profile?.metadata?.twitter || profile?.metadata?.["com.twitter"];
+
+    if (String(mTwitterUrl).match(/^@?[a-zA-Z0-9_]+$/)) {
+      return mTwitterUrl;
+    }
+
+    // If no handle in metadata, try to extract from twitterUrl
+    if (mTwitterUrl) {
+      // Handle different URL formats
+      if (mTwitterUrl.includes("twitter.com/")) {
+        // Extract handle from full URL
+        const match = mTwitterUrl.match(/twitter\.com\/([^/?]+)/);
+        return match ? match[1] : null;
+      } else if (mTwitterUrl.includes("x.com/")) {
+        // Extract handle from X.com URL
+        const match = mTwitterUrl.match(/x\.com\/([^/?]+)/);
+        return match ? match[1] : null;
+      } else if (mTwitterUrl.includes("@")) {
+        // Extract handle after @ symbol
+        const match = mTwitterUrl.match(/@([^/\s]+)/);
+        return match ? match[1] : null;
+      } else {
+        // Assume it's already a handle
+        return mTwitterUrl;
+      }
+    }
+
+    return null;
+  };
+
   return (
     <Card
       className={cn(
@@ -120,15 +157,9 @@ const CandidateCard = ({
                 </div>
               )}
               <div className="flex items-center gap-3">
-                {(profile?.metadata?.twitter ||
-                  profile?.metadata?.["com.twitter"] ||
-                  twitterUrl) && (
+                {getTwitterUrl() && (
                   <a
-                    href={`https://twitter.com/${
-                      profile?.metadata?.twitter ||
-                      profile?.metadata?.["com.twitter"] ||
-                      twitterUrl?.split("/").pop()
-                    }`}
+                    href={`https://x.com/${getTwitterUrl()}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -173,17 +204,29 @@ const CandidateCard = ({
               </div>
             </div>
           </div>
-          {isVoted && (
-            <Badge className="bg-green-500 text-white">✓ Vote Cast</Badge>
-          )}
-          {isVoting && (
-            <Badge className="bg-blue-500 text-white">Voting...</Badge>
-          )}
-          {isSelected && !isVoted && !isVoting && (
-            <Badge className="bg-primary text-primary-foreground">
-              ✓ Selected
-            </Badge>
-          )}
+          <div className="flex items-center gap-2">
+            <a
+              href={`https://app.envoi.sh/#/${name}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              onClick={(e) => e.stopPropagation()}
+              title="View on Envoi"
+            >
+              <Globe size={16} />
+            </a>
+            {isVoted && (
+              <Badge className="bg-green-500 text-white">✓ Vote Cast</Badge>
+            )}
+            {isVoting && (
+              <Badge className="bg-blue-500 text-white">Voting...</Badge>
+            )}
+            {isSelected && !isVoted && !isVoting && (
+              <Badge className="bg-primary text-primary-foreground">
+                ✓ Selected
+              </Badge>
+            )}
+          </div>
         </div>
 
         <div className="space-y-2">
