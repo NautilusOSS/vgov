@@ -24,7 +24,6 @@ import {
   castVote,
   endorseCandidates,
   VOTE_YES,
-  decodeVoter,
 } from "@/utils/command";
 import { namehash } from "@/utils/namehash";
 import { ElectionInfoService } from "@/services/electionInfoService";
@@ -270,6 +269,7 @@ const Index = () => {
   const [isLoadingVoterData, setIsLoadingVoterData] = useState(false);
   const [globalState, setGlobalState] = useState<GlobalState | null>(null);
   const [voterInfo, setVoterInfo] = useState<VoterInfo | null>(null);
+  const [voter, setVoter] = useState<Voter | null>(null);
   const [userVotesMap, setUserVotesMap] = useState<
     Record<string, "yes" | "no">
   >({});
@@ -483,6 +483,23 @@ const Index = () => {
     }
   };
 
+  useEffect(() => {
+    if (activeAccount && activeNetwork) {
+      fetchVoterData();
+    }
+  }, [activeAccount, activeNetwork]);
+
+  useEffect(() => {
+    if (!voterInfo) {
+      return;
+    }
+    if (voterInfo.votePower > 0) {
+      setIsStaked(true);
+    } else {
+      setIsStaked(false);
+    }
+  }, [voterInfo]);
+
   // Function to fetch proposals and votes from blockchain
   const fetchProposals = async () => {
     if (!activeNetwork) {
@@ -605,6 +622,7 @@ const Index = () => {
       fetchEndorsement();
     }
   }, [activeAccount, activeNetwork, currentElection]);
+  console.log("endorsement", endorsement);
 
   const loadAccountPowerLock = useCallback(async () => {
     if (!activeAccount || !activeNetwork) {
@@ -781,12 +799,6 @@ const Index = () => {
     }
   }, [activeNetwork, currentElection]);
 
-  useEffect(() => {
-    if (activeAccount && activeNetwork) {
-      fetchVoterData();
-    }
-  }, [activeAccount, activeNetwork]);
-
   // Use actual wallet connection state
   const isConnected = !!activeAccount && !!activeWallet;
   const walletAddress = activeAccount?.address || "";
@@ -821,6 +833,7 @@ const Index = () => {
 
   const [voiBalance] = useState(75000); // Mock balance - user has enough
   const [balance, setBalance] = useState(0);
+  const [powerLockBalance, setPowerLockBalance] = useState(0);
 
   // fetch user balance
   const fetchUserBalance = async () => {
@@ -849,13 +862,24 @@ const Index = () => {
     //   }
     // );
     // const balanceR = await ci.arc200_balanceOf(activeAccount.address);
-    // const balance = Number(balanceR.returnValue) / 1e6;
+    // const powerLockBalance = Number(balanceR.returnValue);
+    // setPowerLockBalance(powerLockBalance);
   };
+
   useEffect(() => {
     if (activeAccount) {
       fetchUserBalance();
     }
   }, [activeAccount]);
+
+  const fetchVoterInfo = async () => {
+    if (!activeAccount || !activeNetwork || !algod) return;
+    const voter = await getVoter(activeAccount.address, activeNetwork, algod);
+    setVoterInfo(voter);
+  };
+  useEffect(() => {
+    fetchVoterInfo();
+  }, [activeAccount, activeNetwork]);
 
   const { toast } = useToast();
 
@@ -939,6 +963,7 @@ const Index = () => {
 
         // Refresh voter data
         await fetchVoterData();
+
         toast({
           title: "Staking Successful!",
           description: `${lockAmount.toLocaleString()} VOI has been staked. You can now vote for candidates.`,
@@ -1303,7 +1328,7 @@ const Index = () => {
     totalCandidates: candidates.length,
     totalVoters: electionProposal?.endorsementCount || 0,
     participationRate: electionProposal?.endorsementCount / 2000, // TODO here
-    votesRemaining: MAX_VOTES - votedCandidates.size,
+    votesRemaining: endorsement ? 0 : MAX_VOTES - votedCandidates.size,
   };
 
   const filteredCandidates = candidates.filter((candidate) => {
@@ -1373,10 +1398,11 @@ const Index = () => {
                 isStaked ||
                 (voterInfo ? Number(voterInfo.votePower) > 0 : false)
               }
+              endorsement={endorsement}
               isStaking={isStaking}
               isUnstaking={isUnstaking}
               lockEndDate={lockEndDate}
-              votesRemaining={stats.votesRemaining}
+              votesRemaining={endorsement ? 0 : stats.votesRemaining}
               onStake={handleStake}
               onUnstake={handleUnstake}
               powerLockCreatedEvents={powerLockCreatedEvents}
@@ -1489,7 +1515,9 @@ const Index = () => {
                         isVoted={votedCandidates.has(candidate.id)}
                         isVoting={votingCandidates.has(candidate.id)}
                         onSelect={(id) => handleCandidateSelect(parseInt(id))}
-                        canSelect={isStaked && isVotingPeriodOpen}
+                        canSelect={
+                          !endorsement && isStaked && isVotingPeriodOpen
+                        }
                         isVotingPeriodOpen={isVotingPeriodOpen}
                         profile={candidate.profile}
                         showButtons={

@@ -43,6 +43,7 @@ interface CombinedStakingCardProps {
   isStaked: boolean;
   isStaking: boolean;
   isUnstaking: boolean;
+  endorsement: boolean;
   lockEndDate: Date;
   votesRemaining: number;
   onStake: () => void;
@@ -57,6 +58,7 @@ const CombinedStakingCard = ({
   isStaked,
   isStaking,
   isUnstaking,
+  endorsement,
   lockEndDate,
   votesRemaining,
   onStake,
@@ -143,7 +145,7 @@ const CombinedStakingCard = ({
     return () => clearInterval(interval);
   }, [nextUnlockTimestamp]);
 
-  const stakingProgress = (stakedAmount / 50000) * 100;
+  const stakingProgress = (stakedAmount / 5) * 100;
 
   const handleStake = () => {
     if (voiBalance < requiredStake) {
@@ -261,7 +263,7 @@ const CombinedStakingCard = ({
                       Tokens locked during election period
                     </span>
                   </div>
-                  {isStaked && (
+                  {!endorsement && isStaked && (
                     <div className="pt-2">
                       <Badge className="bg-green-500/10 text-green-700 border-green-500/20 text-xs">
                         <CheckCircle className="h-3 w-3 mr-1" />

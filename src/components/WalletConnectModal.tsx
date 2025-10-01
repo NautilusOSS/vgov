@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useWallet, NetworkId } from "@txnlab/use-wallet-react";
+import { useWallet, NetworkId, WalletId } from "@txnlab/use-wallet-react";
 import {
   Dialog,
   DialogContent,
@@ -259,86 +259,100 @@ const WalletConnectModal = ({ isOpen, onClose }: WalletConnectModalProps) => {
         </DialogHeader>
 
         <div className="space-y-3">
-          {wallets.map((wallet) => {
-            const isConnected = isWalletConnected(wallet.id);
-            const isConnecting = connectingWallet === wallet.id;
+          {wallets
+            .filter((wallet) => {
+              if (activeNetwork === NetworkId.LOCALNET) {
+                if (wallet.id === WalletId.MNEMONIC) {
+                  return true;
+                } else {
+                  return false;
+                }
+              } else if (activeNetwork === NetworkId.VOIMAIN) {
+                return [WalletId.LUTE].includes(wallet.id as WalletId);
+              } else {
+                return true;
+              }
+            })
+            .map((wallet) => {
+              const isConnected = isWalletConnected(wallet.id);
+              const isConnecting = connectingWallet === wallet.id;
 
-            return (
-              <div
-                key={wallet.id}
-                className={`relative border rounded-lg p-4 transition-all ${
-                  isConnected
-                    ? "border-green-500 bg-green-50 dark:bg-green-950/20"
-                    : "border-border hover:border-primary/50"
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="text-2xl">{getWalletIcon(wallet.id)}</div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-sm">
-                          {getWalletName(wallet.id)}
-                        </h3>
-                        {isConnected && (
-                          <Badge
-                            variant="secondary"
-                            className="text-xs bg-green-500/10 text-green-700 border-green-500/20"
-                          >
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            Connected
-                          </Badge>
+              return (
+                <div
+                  key={wallet.id}
+                  className={`relative border rounded-lg p-4 transition-all ${
+                    isConnected
+                      ? "border-green-500 bg-green-50 dark:bg-green-950/20"
+                      : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="text-2xl">{getWalletIcon(wallet.id)}</div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold text-sm">
+                            {getWalletName(wallet.id)}
+                          </h3>
+                          {isConnected && (
+                            <Badge
+                              variant="secondary"
+                              className="text-xs bg-green-500/10 text-green-700 border-green-500/20"
+                            >
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              Connected
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {getWalletDescription(wallet.id)}
+                        </p>
+                        {isConnected && activeAccount && (
+                          <p className="text-xs text-green-600 dark:text-green-400 mt-1 font-mono">
+                            {truncateAddress(activeAccount.address)}
+                          </p>
                         )}
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {getWalletDescription(wallet.id)}
-                      </p>
-                      {isConnected && activeAccount && (
-                        <p className="text-xs text-green-600 dark:text-green-400 mt-1 font-mono">
-                          {truncateAddress(activeAccount.address)}
-                        </p>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      {isConnected ? (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          disabled
+                          className="text-xs"
+                        >
+                          <CheckCircle className="h-3 w-3 mr-1" />
+                          Connected
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => handleWalletConnect(wallet.id)}
+                          disabled={isConnecting || creatingDevAccount}
+                          size="sm"
+                          className="text-xs bg-voi-gradient hover:opacity-90"
+                        >
+                          {isConnecting || creatingDevAccount ? (
+                            <>
+                              <Loader2 className="h-3 w-3 animate-spin mr-1" />
+                              {wallet.id === "mnemonic"
+                                ? "Creating Account..."
+                                : "Connecting..."}
+                            </>
+                          ) : (
+                            <>
+                              <Wallet className="h-3 w-3 mr-1" />
+                              Connect
+                            </>
+                          )}
+                        </Button>
                       )}
                     </div>
                   </div>
-
-                  <div className="flex items-center space-x-2">
-                    {isConnected ? (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled
-                        className="text-xs"
-                      >
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                        Connected
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={() => handleWalletConnect(wallet.id)}
-                        disabled={isConnecting || creatingDevAccount}
-                        size="sm"
-                        className="text-xs bg-voi-gradient hover:opacity-90"
-                      >
-                        {isConnecting || creatingDevAccount ? (
-                          <>
-                            <Loader2 className="h-3 w-3 animate-spin mr-1" />
-                            {wallet.id === "mnemonic"
-                              ? "Creating Account..."
-                              : "Connecting..."}
-                          </>
-                        ) : (
-                          <>
-                            <Wallet className="h-3 w-3 mr-1" />
-                            Connect
-                          </>
-                        )}
-                      </Button>
-                    )}
-                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
 
         <div className="flex items-center justify-between pt-4 border-t">

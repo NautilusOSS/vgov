@@ -4,11 +4,11 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { CheckCircle, User, ExternalLink } from 'lucide-react';
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { CheckCircle, User, ExternalLink } from "lucide-react";
 
 interface VoteConfirmationModalProps {
   isOpen: boolean;
@@ -19,13 +19,13 @@ interface VoteConfirmationModalProps {
   isVoteChange?: boolean;
 }
 
-const VoteConfirmationModal = ({ 
-  isOpen, 
-  onClose, 
-  candidate, 
-  transactionHash, 
+const VoteConfirmationModal = ({
+  isOpen,
+  onClose,
+  candidate,
+  transactionHash,
   onVoteMore,
-  isVoteChange = false
+  isVoteChange = false,
 }: VoteConfirmationModalProps) => {
   const isMultipleVotes = Array.isArray(candidate);
   const voteCount = isMultipleVotes ? candidate.length : 1;
@@ -36,18 +36,22 @@ const VoteConfirmationModal = ({
           <div className="mx-auto w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center">
             <CheckCircle className="w-8 h-8 text-green-600" />
           </div>
-          
+
           <DialogTitle className="text-xl font-semibold">
-            {isVoteChange ? 'Votes Updated Successfully!' : 
-             isMultipleVotes ? `${voteCount} Votes` : 'Vote'} {!isVoteChange && 'Cast Successfully!'}
+            {isVoteChange
+              ? "Votes Updated Successfully!"
+              : isMultipleVotes
+              ? `${voteCount} Votes`
+              : "Vote"}{" "}
+            {!isVoteChange && "Cast Successfully!"}
           </DialogTitle>
-          
+
           <DialogDescription className="text-center">
-            {isVoteChange ? 'Your vote selection has been updated on the blockchain' :
-             isMultipleVotes 
-               ? `Your ${voteCount} votes have been recorded on the blockchain`
-               : 'Your vote has been recorded on the blockchain'
-            }
+            {isVoteChange
+              ? "Your vote selection has been updated on the blockchain"
+              : isMultipleVotes
+              ? `Your ${voteCount} votes have been recorded on the blockchain`
+              : "Your vote has been recorded on the blockchain"}
           </DialogDescription>
         </DialogHeader>
 
@@ -69,7 +73,9 @@ const VoteConfirmationModal = ({
             </div>
           ) : (
             <div className="p-3 bg-muted/50 rounded-lg text-center">
-              <p className="font-medium">Successfully voted for {voteCount} candidates</p>
+              <p className="font-medium">
+                Successfully voted for {voteCount} candidates
+              </p>
               <Badge variant="secondary" className="mt-1 text-xs">
                 ✓ All Votes Cast
               </Badge>
@@ -80,9 +86,13 @@ const VoteConfirmationModal = ({
           <div className="space-y-2 p-3 bg-muted/30 rounded-lg">
             <p className="text-sm font-medium">Transaction Details</p>
             <div className="flex items-center justify-between">
-              <span className="text-xs text-muted-foreground">Transaction Hash:</span>
+              <span className="text-xs text-muted-foreground">
+                Transaction Hash:
+              </span>
               <div className="flex items-center gap-1">
-                <span className="text-xs font-mono">{transactionHash.slice(0, 8)}...{transactionHash.slice(-6)}</span>
+                <span className="text-xs font-mono">
+                  {transactionHash.slice(0, 8)}...{transactionHash.slice(-6)}
+                </span>
                 <ExternalLink className="w-3 h-3 text-muted-foreground" />
               </div>
             </div>
@@ -99,9 +109,9 @@ const VoteConfirmationModal = ({
           <Button variant="outline" onClick={onClose} className="flex-1">
             Close
           </Button>
-          <Button onClick={onVoteMore} className="flex-1 bg-voi-gradient hover:opacity-90">
+          {/*<Button onClick={onVoteMore} className="flex-1 bg-voi-gradient hover:opacity-90">
             {isMultipleVotes ? 'Select More' : 'Vote for More'}
-          </Button>
+          </Button>*/}
         </div>
       </DialogContent>
     </Dialog>
