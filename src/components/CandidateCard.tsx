@@ -19,6 +19,7 @@ import {
   Globe,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ReactMarkdown from "react-markdown";
 
 interface ProfileMetadata {
   bio?: string;
@@ -29,6 +30,7 @@ interface ProfileMetadata {
   twitter?: string;
   github?: string;
   url?: string;
+  description?: string;
   "com.twitter"?: string;
   "com.github"?: string;
 }
@@ -119,6 +121,28 @@ const CandidateCard = ({
     }
 
     return null;
+  };
+
+  const getBio = () => {
+    if (!profile?.metadata) return null;
+
+    let bio = profile.metadata.bio || "";
+
+    // Check for bio extensions (bio.ext.1, bio.ext.2, etc.)
+    let extIndex = 2;
+    while (true) {
+      const extKey = `bio.ext.${extIndex}`;
+      const extValue = (profile.metadata as any)[extKey];
+
+      if (extValue) {
+        bio += extValue;
+        extIndex++;
+      } else {
+        break;
+      }
+    }
+
+    return bio || null;
   };
 
   return (
@@ -240,8 +264,10 @@ const CandidateCard = ({
 
         <div className="space-y-2">
           <p className="text-sm font-semibold text-foreground">Bio:</p>
-          <CardDescription className="text-sm leading-relaxed">
-            {profile?.metadata?.bio || description}
+          <CardDescription className="text-sm leading-relaxed prose prose-sm max-w-none dark:prose-invert">
+            <ReactMarkdown>
+              {getBio() || description}
+            </ReactMarkdown>
           </CardDescription>
         </div>
       </CardHeader>
