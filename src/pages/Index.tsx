@@ -1361,7 +1361,13 @@ const Index = () => {
         isConnected={isConnected}
         walletAddress={walletAddress}
         isStaked={isStaked}
-        stakedAmount={stakedAmount}
+        stakedAmount={
+          powerLockCreatedEvents.length + powerLockUnlockedEvents.length < 2
+            ? powerLockCreatedEvents
+                .map((event) => event.powerLock.power_source_amount)
+                .reduce((sum, amount) => sum + amount, 0) / 1e6
+            : 0
+        }
         onDisconnect={handleDisconnect}
       />
 
