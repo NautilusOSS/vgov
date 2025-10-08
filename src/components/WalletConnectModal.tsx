@@ -268,7 +268,11 @@ const WalletConnectModal = ({ isOpen, onClose }: WalletConnectModalProps) => {
                   return false;
                 }
               } else if (activeNetwork === NetworkId.VOIMAIN) {
-                return [WalletId.LUTE].includes(wallet.id as WalletId);
+                return [
+                  WalletId.LUTE,
+                  WalletId.KIBISIS,
+                  WalletId.WALLETCONNECT
+                ].includes(wallet.id as WalletId);
               } else {
                 return true;
               }
