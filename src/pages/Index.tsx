@@ -994,15 +994,44 @@ const Index = () => {
   const handleUnstake = async () => {
     setIsUnstaking(true);
 
-    const ci = makeContract(
+    const ci = new CONTRACT(
       getGovernanceAppId(activeNetwork),
-      PowGovernanceAppSpec,
+      algod,
+      undefined,
+      abi.custom,
       {
         addr: activeAccount.address,
         sk: new Uint8Array(),
-      },
-      algod
+      }
     );
+    const builder = {
+      governance: new CONTRACT(
+        getGovernanceAppId(activeNetwork),
+        algod,
+        undefined,
+        { ...PowGovernanceAppSpec.contract, events: [] },
+        {
+          addr: activeAccount.address,
+          sk: new Uint8Array(),
+        },
+        true,
+        false,
+        true
+      ),
+      token: new CONTRACT(
+        getATokenAppId(activeNetwork),
+        algod,
+        undefined,
+        abi.nt200,
+        {
+          addr: activeAccount.address,
+          sk: new Uint8Array(),
+        },
+        true,
+        false,
+        true
+      ),
+    };
 
     try {
       if (powerLockCreatedEvents.length === 0) {
@@ -1032,18 +1061,48 @@ const Index = () => {
         powerUnlockTimestamp: unlock.powerLock.power_source_unlock_timestamp,
       });
 
+      const buildN = [];
+
+      // Unlock power source
+      {
+        const txnO = (
+          await builder.governance.unlock_power(
+            unlock.powerLock.power_source_id,
+            unlock.powerLock.power_source_unlock_timestamp
+          )
+        ).obj;
+        buildN.push({
+          ...txnO,
+          note: new TextEncoder().encode(
+            `Unlock power source ${unlock.powerLock.power_source_id}`
+          ),
+        });
+      }
+      // withdraw power source
+      {
+        const txnO = (
+          await builder.token.withdraw(unlock.powerLock.power_source_amount)
+        ).obj;
+        buildN.push({
+          ...txnO,
+          note: new TextEncoder().encode(
+            `Withdraw power source ${unlock.powerLock.power_source_id}`
+          ),
+        });
+      }
+
       // Unlock all available power lock
       ci.setFee(2000);
-      const unlockResult = await ci.unlock_power(
-        unlock.powerLock.power_source_id,
-        unlock.powerLock.power_source_unlock_timestamp
-      );
+      ci.setExtraTxns(buildN);
+      ci.setEnableGroupResourceSharing(true);
 
-      console.log("Unlock power response:", unlockResult);
+      const customR = await ci.custom();
 
-      if (unlockResult.success) {
+      console.log("Unlock power response:", customR);
+
+      if (customR.success) {
         const stxn = await signTransactions(
-          unlockResult.txns.map(
+          customR.txns.map(
             (txn: string) =>
               new Uint8Array(
                 atob(txn)
@@ -1061,7 +1120,7 @@ const Index = () => {
       } else {
         console.error(
           `Failed to unlock power source ${unlock.powerLock.power_source_id}:`,
-          unlockResult.error
+          customR.error
         );
       }
 
